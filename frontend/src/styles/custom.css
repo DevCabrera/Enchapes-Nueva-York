@@ -1,0 +1,36 @@
+/* src/styles/custom.css */
+@keyframes zoom {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.01); /* Zoom in */
+    }
+    100% {
+      transform: scale(1); /* Zoom out */
+    }
+  }
+  
+  .animate-zoom {
+    animation: zoom 15s infinite ease-in-out; /* Duración de 10s, se repite infinitamente */
+    overflow: hidden; /* Evita que la imagen se desborde */
+  }
+  
+/*carrusel
+/* src/styles/custom.css */
+@keyframes zoom {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04); /* Zoom in */
+  }
+  100% {
+    transform: scale(1.01); /* Zoom out */
+  }
+}
+
+.animate-zoomc {
+  animation: zoom 20s infinite ease-in-out; /* Duración de 10s, se repite infinitamente */
+  overflow: hidden;
+}
