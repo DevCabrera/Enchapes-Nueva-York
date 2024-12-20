@@ -11,6 +11,7 @@ import Contact from "./components/specifics/Contact";
 import HomeProducts from "./components/specifics/HomeProducts";
 import Product from "./components/specifics/Product";
 import LoginModal from "./components/specifics/loginModal";
+import Account from "./components/account/Account";
 
 import { AuthProvider, useAuth } from "../Client/Context/AuthProvider";
 import PropTypes from "prop-types";
@@ -63,6 +64,7 @@ function MainContent() {
           }
         />
         <Route path="/product" element={<Product />} />
+        <Route path="/account" element={<Account />} />
       </Routes>
 
       {/* Modal de login */}
