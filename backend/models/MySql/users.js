@@ -28,6 +28,10 @@ const Users = sequelize.define('usuario', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    celular: {
+        type: DataTypes.STRING, 
+        allowNull: true, 
+      },
 }, {
     timestamps: true,
     freezeTableName: true,

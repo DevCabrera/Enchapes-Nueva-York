@@ -70,7 +70,7 @@ const createUser = async (req, res) => {
         if (password.length < 6 || password.length > 16) {
             return res.status(400).json({ message: "La contraseña debe tener entre 6 y 16 caracteres." });
         }
-        
+
         const id_tipo_usuario = req.body.id_tipo_usuario || 2;
 
         const newUser = await Users.create({
@@ -103,7 +103,7 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { email } = req.params;
-        const { nombre, apellido, password, id_tipo_usuario } = req.body;
+        const { nombre, apellido, celular } = req.body; // Eliminamos password aquí
 
         const user = await Users.findOne({ where: { email } });
 
@@ -111,13 +111,13 @@ const updateUser = async (req, res) => {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
 
-        // Actualizamos los campos
-        await user.update({
-            nombre: nombre || user.nombre,
-            apellido: apellido || user.apellido,
-            password: password || user.password,
-            id_tipo_usuario: id_tipo_usuario || user.id_tipo_usuario,
-        });
+        // Validar y actualizar solo los campos enviados
+        const updatedData = {};
+        if (nombre) updatedData.nombre = nombre;
+        if (apellido) updatedData.apellido = apellido;
+        if (celular) updatedData.celular = celular;
+
+        await user.update(updatedData);
 
         res.status(200).json({
             message: "Usuario actualizado exitosamente",
@@ -125,7 +125,7 @@ const updateUser = async (req, res) => {
                 email: user.email,
                 nombre: user.nombre,
                 apellido: user.apellido,
-                nuevoRol: user.id_tipo_usuario
+                celular: user.celular,
             },
         });
     } catch (error) {
@@ -133,7 +133,37 @@ const updateUser = async (req, res) => {
         res.status(500).json({ error: "Error al actualizar el usuario" });
     }
 };
+const updatePassword = async (req, res) => {
+    try {
+        const { email } = req.params;
+        const { oldPassword, newPassword } = req.body;
 
+        if (!oldPassword || !newPassword) {
+            return res.status(400).json({ message: "Ambas contraseñas son requeridas." });
+        }
+
+        const user = await Users.findOne({ where: { email } });
+
+        if (!user) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+
+        // Verificar la contraseña antigua
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "La contraseña actual es incorrecta." });
+        }
+
+        // Actualizar la nueva contraseña
+        user.password = newPassword; // El hook manejará la encriptación
+        await user.save();
+
+        res.status(200).json({ message: "Contraseña actualizada exitosamente" });
+    } catch (error) {
+        console.error("Error al actualizar la contraseña:", error);
+        res.status(500).json({ error: "Error al actualizar la contraseña" });
+    }
+};
 
 
 /**
@@ -164,4 +194,5 @@ module.exports = {
     createUser,
     updateUser,
     deleteUser,
+    updatePassword
 };

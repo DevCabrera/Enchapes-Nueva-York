@@ -44,5 +44,5 @@ export const useAuthProvider = () => {
         }
     };
 
-    return { user, loginUser, logoutUser, loading };
+    return { user, loginUser, logoutUser, loading, setUser };
 };

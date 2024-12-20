@@ -24,3 +24,9 @@ export const deleteUser = async (email) => {
     const response = await axiosClient.delete(`/users/${email}`);
     return response.data;
 };
+
+export const updatePassword = async (email, passwords) => {
+    // `passwords` debe incluir `oldPassword` y `newPassword`
+    const response = await axiosClient.put(`/users/${email}/password`, passwords);
+    return response.data;
+};

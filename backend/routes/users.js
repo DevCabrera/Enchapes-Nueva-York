@@ -8,6 +8,7 @@ const {
     createUser,
     updateUser,
     deleteUser,
+    updatePassword
 } = require('../controllers/users');
 
 // Ruta para obtener todos los usuarios (Solo para admins)
@@ -23,5 +24,8 @@ router.put('/:email', verifyToken, updateUser);
 
 // Ruta para eliminar un usuario (Solo admins)
 router.delete('/:email', verifyToken, isAdmin, deleteUser);
+
+//RUTA EXCLUSIVAMENTE PARA LA PASS, PARA EVITAR ERRORRES DE NVIOS
+router.put('/:email/password', verifyToken, updatePassword);
 
 module.exports = router;

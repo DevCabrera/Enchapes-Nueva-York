@@ -10,7 +10,7 @@ const PersonalInfo = () => {
     nombre: user?.nombre || "",
     apellido: user?.apellido || "",
     email: user?.email || "",
-    telefono: user?.telefono || "",
+    celular: user?.celular || "",
   });
 
   const handleSwitchChange = () => setIsEditable(!isEditable);
@@ -23,8 +23,19 @@ const PersonalInfo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const updatedUser = await updateUser(formData.email, formData);
-      setUser(updatedUser); // Actualizar el usuario en el contexto
+      const updatedData = {
+        ...(formData.nombre !== user.nombre && { nombre: formData.nombre }),
+        ...(formData.apellido !== user.apellido && {
+          apellido: formData.apellido,
+        }),
+        ...(formData.celular !== user.celular && { celular: formData.celular }),
+      };
+
+      const response = await updateUser(formData.email, updatedData);
+      setUser((prevUser) => ({
+        ...prevUser,
+        ...response.user, // Actualiza solo los datos relevantes
+      }));
       alert("Información actualizada exitosamente");
       setIsEditable(false);
     } catch (error) {
@@ -37,7 +48,11 @@ const PersonalInfo = () => {
     <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-2xl font-extrabold mr-4">Datos personales</h3>
-        <Switch checked={isEditable} onChange={handleSwitchChange} color="green" />
+        <Switch
+          checked={isEditable}
+          onChange={handleSwitchChange}
+          color="green"
+        />
       </div>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
@@ -68,16 +83,17 @@ const PersonalInfo = () => {
             type="email"
             name="email"
             value={formData.email}
+            onChange={handleChange}
             className="w-full px-3 py-2 border rounded shadow-sm"
-            disabled
+            disabled={!isEditable}
           />
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Teléfono celular*</label>
           <input
             type="text"
-            name="telefono"
-            value={formData.telefono}
+            name="celular"
+            value={formData.celular}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded shadow-sm"
             disabled={!isEditable}
