@@ -13,6 +13,11 @@ const Direccion = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        favorita: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false, // Por defecto, ninguna dirección es favorita
+        },
     },
     {
         timestamps: true,
