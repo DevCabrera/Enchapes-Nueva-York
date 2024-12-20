@@ -25,8 +25,28 @@ export const deleteUser = async (email) => {
     return response.data;
 };
 
-export const updatePassword = async (email, passwords) => {
-    // `passwords` debe incluir `oldPassword` y `newPassword`
-    const response = await axiosClient.put(`/users/${email}/password`, passwords);
+export const updatePassword = async (email, passwordData) => {
+    const response = await axiosClient.put(`/users/${email}/password`, passwordData);
+    return response.data;
+};
+
+//importar controlador de direcciones
+export const getDirecciones = async (email) => {
+    const response = await axiosClient.get(`/address/${email}`);
+    return response.data;
+};
+
+export const createDireccion = async (direccionData) => {
+    const response = await axiosClient.post(`/address/${direccionData.email_usuario}`, direccionData);
+    return response.data;
+};
+
+export const updateDireccion = async (id, direccionData) => {
+    const response = await axiosClient.put(`/address/${id}`, direccionData);
+    return response.data;
+};
+
+export const deleteDireccion = async (id) => {
+    const response = await axiosClient.delete(`/address/${id}`);
     return response.data;
 };

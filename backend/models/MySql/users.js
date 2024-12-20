@@ -29,9 +29,9 @@ const Users = sequelize.define('usuario', {
         allowNull: false,
     },
     celular: {
-        type: DataTypes.STRING, 
-        allowNull: true, 
-      },
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
 }, {
     timestamps: true,
     freezeTableName: true,
@@ -43,7 +43,8 @@ const Users = sequelize.define('usuario', {
             }
         },
         beforeUpdate: async (user) => {
-            if (user.password) {
+            // Verificar si el campo "password" ha cambiado antes de encriptarlo con el campo changed
+            if (user.changed("password")) {
                 const salt = await bcrypt.genSalt(10);
                 user.password = await bcrypt.hash(user.password, salt);
             }

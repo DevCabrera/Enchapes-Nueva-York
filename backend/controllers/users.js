@@ -1,5 +1,6 @@
 const Users = require("../models/MySql/users");
 const TipoUsuario = require("../models/MySql/userRol");
+const bcrypt = require('bcryptjs');
 /**
  * Método para obtener todos los usuarios
  * @param {*} req
@@ -60,7 +61,7 @@ const getUserByEmail = async (req, res) => {
 
 const createUser = async (req, res) => {
     try {
-        console.log("Datos recibidos en el backend:", req.body);
+        //console.log("Datos recibidos en el backend:", req.body);
 
         const { email, nombre, apellido, password } = req.body;
 
@@ -133,38 +134,35 @@ const updateUser = async (req, res) => {
         res.status(500).json({ error: "Error al actualizar el usuario" });
     }
 };
+/**
+ * Método para cambiar password y separarla de las otras peticiones
+ * @param {*} req
+ * @param {*} res
+ */
 const updatePassword = async (req, res) => {
     try {
         const { email } = req.params;
         const { oldPassword, newPassword } = req.body;
 
-        if (!oldPassword || !newPassword) {
-            return res.status(400).json({ message: "Ambas contraseñas son requeridas." });
-        }
-
         const user = await Users.findOne({ where: { email } });
-
         if (!user) {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
 
-        // Verificar la contraseña antigua
         const isMatch = await bcrypt.compare(oldPassword, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: "La contraseña actual es incorrecta." });
         }
 
-        // Actualizar la nueva contraseña
-        user.password = newPassword; // El hook manejará la encriptación
+        user.password = newPassword; // Se encripta automáticamente por el hook
         await user.save();
 
-        res.status(200).json({ message: "Contraseña actualizada exitosamente" });
+        res.status(200).json({ message: "Contraseña actualizada exitosamente." });
     } catch (error) {
         console.error("Error al actualizar la contraseña:", error);
-        res.status(500).json({ error: "Error al actualizar la contraseña" });
+        res.status(500).json({ message: "Error al actualizar la contraseña." });
     }
 };
-
 
 /**
  * Método para eliminar un usuario
