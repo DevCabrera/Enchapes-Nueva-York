@@ -3,7 +3,7 @@ const router = express.Router();
 const { verifyToken } = require('../middlewares/authMiddlerawe');
 const {
     createDireccion,
-    getDireccionesByUser,
+    getDirecciones,
     updateDireccion,
     deleteDireccion,
 } = require('../controllers/address');
@@ -12,7 +12,7 @@ const {
 router.post('/:email', verifyToken, createDireccion);
 
 // Obtener todas las direcciones de un usuario
-router.get('/:email', verifyToken, getDireccionesByUser);
+router.get('/:email', verifyToken, getDirecciones);
 
 // Actualizar una dirección
 router.put('/:id', verifyToken, updateDireccion);

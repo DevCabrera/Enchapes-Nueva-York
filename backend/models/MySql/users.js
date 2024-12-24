@@ -60,12 +60,15 @@ Users.belongsTo(TipoUsuario, {
 });
 
 Users.hasMany(Direccion, {
-    foreignKey: "email_usuario", // Llave foránea en Direccion
+    foreignKey: "email", // Cambiamos de "email_usuario" a "email"
     as: "direcciones",
 });
-
+Direccion.belongsTo(Users, {
+    foreignKey: "email", // Relación inversa, usando "email"
+    as: "usuario",
+});
 Users.hasOne(Carrito, {
-    foreignKey: "email_usuario", // Llave foránea en Carrito
+    foreignKey: "email", // Llave foránea en Carrito
     as: "carrito",
 });
 

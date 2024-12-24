@@ -4,28 +4,26 @@ const Users = require("../models/MySql/users");
 // Crear una nueva dirección
 const createDireccion = async (req, res) => {
     try {
-        const { email } = req.params; // Email del usuario asociado
+        const { email } = req.params; // Extraer el email del parámetro
         const { direccion, favorita } = req.body;
 
-        // Verificar si el usuario existe
+        if (!email) {
+            return res.status(400).json({ message: "Email no proporcionado" });
+        }
+
         const user = await Users.findByPk(email);
         if (!user) {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
-        const direccionesCount = await Direccion.count({ where: { email_usuario: email } });
-        if (direccionesCount >= 3) {
-            return res.status(400).json({ message: "Solo puedes tener hasta 3 direcciones." });
-        }
-        // Si es favorita, desmarcar otras direcciones favoritas
+
         if (favorita) {
-            await Direccion.update({ favorita: false }, { where: { email_usuario: email } });
+            await Direccion.update({ favorita: false }, { where: { email } });
         }
 
-        // Crear la nueva dirección
         const newDireccion = await Direccion.create({
             direccion,
             favorita,
-            email_usuario: email,
+            email,
         });
 
         res.status(201).json(newDireccion);
@@ -35,14 +33,15 @@ const createDireccion = async (req, res) => {
     }
 };
 
+
 // Obtener todas las direcciones de un usuario
-const getDireccionesByUser = async (req, res) => {
+const getDirecciones = async (req, res) => {
     try {
         const { email } = req.params;
 
         const direcciones = await Direccion.findAll({
-            where: { email_usuario: email },
-            attributes: ["id_direccion", "direccion", "favorita"], // Evita incluir campos innecesarios
+            where: { email },
+            attributes: ["id_direccion", "direccion", "favorita"],
         });
 
         res.status(200).json(direcciones);
@@ -51,6 +50,7 @@ const getDireccionesByUser = async (req, res) => {
         res.status(500).json({ error: "Error al obtener las direcciones" });
     }
 };
+
 
 
 // Actualizar una dirección (incluyendo favorita)
@@ -66,7 +66,7 @@ const updateDireccion = async (req, res) => {
 
         // Si se marca como favorita, desmarcar otras favoritas
         if (favorita) {
-            await Direccion.update({ favorita: false }, { where: { email_usuario: dir.email_usuario } });
+            await Direccion.update({ favorita: false }, { where: { email: dir.email } });
         }
 
         await dir.update({ direccion, favorita });
@@ -77,6 +77,7 @@ const updateDireccion = async (req, res) => {
         res.status(500).json({ error: "Error al actualizar la dirección" });
     }
 };
+
 
 // Eliminar una dirección
 const deleteDireccion = async (req, res) => {
@@ -96,9 +97,10 @@ const deleteDireccion = async (req, res) => {
     }
 };
 
+
 module.exports = {
     createDireccion,
-    getDireccionesByUser,
+    getDirecciones,
     updateDireccion,
     deleteDireccion,
 };

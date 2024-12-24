@@ -10,6 +10,7 @@ const verifyToken = (req, res, next) => {
 
     // Verificar si el token fue proporcionado
     if (!token) {
+        console.error("Token no proporcionado");
         return res.status(401).json({ message: "Acceso denegado, token no proporcionado" });
     }
 
@@ -23,15 +24,15 @@ const verifyToken = (req, res, next) => {
         // Continuar al siguiente middleware o controlador
         next();
     } catch (error) {
+        console.error("Token inválido:", error);
         return res.status(401).json({ message: "Token inválido o expirado" });
     }
 };
-const isAdmin = (req, res, next) => { 
-    if (req.user && req.user.id_tipo_usuario === 1) 
-        { next(); } 
-    else { 
-        return res.status(403).json({ message: "Acceso denegado, se requiere rol de administrador" }); 
-    } 
+const isAdmin = (req, res, next) => {
+    if (req.user && req.user.id_tipo_usuario === 1) { next(); }
+    else {
+        return res.status(403).json({ message: "Acceso denegado, se requiere rol de administrador" });
+    }
 };
 
 module.exports = { isAdmin, verifyToken };

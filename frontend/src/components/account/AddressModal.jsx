@@ -30,7 +30,7 @@ const AddressModal = ({ isOpen, onClose, direccion, onSave }) => {
       } else {
         savedDireccion = await createDireccion({
           ...formData,
-          email_usuario: user.email, // Email del usuario autenticado
+          email: user.email,
         });
       }
       onSave(savedDireccion);
@@ -39,6 +39,7 @@ const AddressModal = ({ isOpen, onClose, direccion, onSave }) => {
       console.error("Error al guardar dirección:", error);
     }
   };
+
   if (!isOpen) return null;
 
   return (

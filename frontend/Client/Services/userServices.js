@@ -37,7 +37,7 @@ export const getDirecciones = async (email) => {
 };
 
 export const createDireccion = async (direccionData) => {
-    const response = await axiosClient.post(`/address/${direccionData.email_usuario}`, direccionData);
+    const response = await axiosClient.post(`/address/${direccionData.email}`, direccionData);
     return response.data;
 };
 

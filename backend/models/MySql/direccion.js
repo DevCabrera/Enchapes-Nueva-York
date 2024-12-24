@@ -18,6 +18,14 @@ const Direccion = sequelize.define(
             allowNull: false,
             defaultValue: false, // Por defecto, ninguna dirección es favorita
         },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false, // Llave foránea a "Users"
+            references: {
+                model: "usuario",
+                key: "email",
+            },
+        }
     },
     {
         timestamps: true,
