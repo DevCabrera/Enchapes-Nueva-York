@@ -1,29 +1,55 @@
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { getProduct } from "../../../Client/Services/productServices";
 import { Button, Typography } from "@material-tailwind/react";
 
-export default function Product() {
+const Product = () => {
+  const formatPriceCLP = (price) => {
+    return new Intl.NumberFormat("es-CL", {
+      style: "currency",
+      currency: "CLP",
+    }).format(price);
+  };
+  const { sku } = useParams(); // Obtener SKU desde los parámetros de la URL
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const data = await getProduct(sku);
+        setProduct(data);
+      } catch (error) {
+        console.error("Error al obtener el producto:", error);
+      }
+    };
+    fetchProduct();
+  }, [sku]);
+
+  if (!product) return <div>Cargando...</div>;
+
   return (
     <div className="flex justify-center mt-10 space-x-8">
       <div className="h-[400px] w-[600px] mt-10 ml-[10px]">
         <img
           className="rounded-lg object-scale-down object-left shadow-xl shadow-blue-gray-900/50"
-          src="https://images.unsplash.com/photo-1682407186023-12c70a4a35e0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2832&q=80"
-          alt="nature image"
+          src={product.foto}
+          alt={product.nombre}
         />
       </div>
       <div className="max-w-md p-6 bg-white rounded-lg shadow-lg">
         {/* SKU */}
         <Typography className="text-sm text-gray-500 mb-1">
-          SKU: codigo del enchape
+          SKU: {product.sku}
         </Typography>
 
         {/* Nombre del producto */}
         <Typography variant="h3" className="font-bold text-gray-800 mb-2">
-          Revestimiento New York
+          {product.nombre}
         </Typography>
 
         {/* Precio */}
         <Typography variant="h4" className="text-gray-700 mb-1">
-          $24.500
+          {formatPriceCLP(product.precio_m2)}
         </Typography>
         <Typography className="text-sm text-gray-500 mb-4">
           Impuesto incluido
@@ -49,14 +75,14 @@ export default function Product() {
 
         {/* Descripción del producto */}
         <Typography variant="h5" className="font-semibold text-gray-800 mb-3">
-          Revestimiento New York
+          {product.nombre}
         </Typography>
         <ul className="list-disc list-inside text-gray-700 space-y-1">
-          <li>Ancho: de 3cm a 28cm aprox.</li>
-          <li>Alto: 5,5cm aprox.</li>
-          <li>Espesor: 1,5cm aprox.</li>
-          <li>Peso M2: 16kg aprox.</li>
-          <li>Valor por Metro Cuadrado</li>
+          <li>Ancho: {product.ancho} cm</li>
+          <li>Alto: {product.alto} cm</li>
+          <li>Espesor: {product.espesor} cm</li>
+          <li>Peso M2: {product.peso_m2} kg</li>
+          <li>Valor por Metro Cuadrado: {product.precio_m2}</li>
           <li>Rendimiento considera Cantería de 1cm aprox.</li>
         </ul>
 
@@ -78,4 +104,6 @@ export default function Product() {
       </div>
     </div>
   );
-}
+};
+
+export default Product;

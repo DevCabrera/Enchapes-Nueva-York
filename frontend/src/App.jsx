@@ -9,9 +9,10 @@ import AboutUs from "./components/general/AboutUs";
 import IdeasHome from "./components/general/IdeasHome";
 import Contact from "./components/specifics/Contact";
 import HomeProducts from "./components/specifics/HomeProducts";
-import Product from "./components/specifics/Product";
+import Product from "./components/product/Product";
 import LoginModal from "./components/specifics/loginModal";
 import Account from "./components/account/Account";
+import AllProducts from "./components/product/AllProducts";
 
 import { AuthProvider, useAuth } from "../Client/Context/AuthProvider";
 import PropTypes from "prop-types";
@@ -63,7 +64,9 @@ function MainContent() {
             </>
           }
         />
-        <Route path="/product" element={<Product />} />
+        <Route path="/products" element={<AllProducts />} />
+        <Route path="/products/:sku" element={<Product />} />
+
         <Route path="/account" element={<Account />} />
       </Routes>
 

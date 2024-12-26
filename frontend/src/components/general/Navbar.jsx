@@ -37,7 +37,7 @@ export default function Navbart({ setOpenModal }) {
         variant="small"
         className="p-1 font-normal text-white"
       >
-        <Link to="/product" className="flex items-center hover:text-[#E67E22]">
+        <Link to="/products" className="flex items-center hover:text-[#E67E22]">
           Bloques
         </Link>
       </Typography>
