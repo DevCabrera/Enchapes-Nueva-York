@@ -1,6 +1,7 @@
 const Users = require("../models/MySql/users");
 const TipoUsuario = require("../models/MySql/userRol");
 const bcrypt = require('bcryptjs');
+const Direccion = require("../models/MySql/direccion")
 /**
  * Método para obtener todos los usuarios
  * @param {*} req
@@ -16,6 +17,13 @@ const getUsers = async (req, res) => {
         // Obtener todos los usuarios
         const users = await Users.findAll({
             attributes: ['email', 'nombre', 'apellido'],
+            include:[
+                {
+                    model: Direccion,
+                    as:'direcciones',
+                    attributes:['direccion']
+                }
+            ]
         });
         res.status(200).json(users);
     } catch (error) {

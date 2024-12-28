@@ -7,10 +7,18 @@ const AuthContext = createContext();
 
 // Proveedor del contexto de autenticación
 export const AuthProvider = ({ children }) => {
-  const { user, loginUser, setUser,logoutUser, loading } = useAuthProvider();
+  const { user, loginUser, setUser, logoutUser, loading } = useAuthProvider();
 
   return (
-    <AuthContext.Provider value={{ user, setUser,loginUser, logoutUser, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        loginUser,
+        logoutUser,
+        loading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

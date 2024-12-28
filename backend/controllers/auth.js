@@ -18,7 +18,10 @@ const loginUser = async (req, res) => {
         }
 
         // Crear el token JWT
-        const token = jwt.sign({ email: user.email, id_tipo_usuario: user.id_tipo_usuario }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        const token = jwt.sign({
+            email: user.email,
+            id_tipo_usuario: user.id_tipo_usuario
+        }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
         // Configurar la cookie con opciones seguras
         res.cookie("authToken", token, {
@@ -28,7 +31,15 @@ const loginUser = async (req, res) => {
             maxAge: 60 * 60 * 1000, // 1 hora
         });
 
-        res.status(200).json({ message: "Inicio de sesión exitoso", user: { email: user.email, nombre: user.nombre, apellido: user.apellido } });
+        res.status(200).json({
+            message: "Inicio de sesión exitoso",
+            user: {
+                email: user.email,
+                nombre: user.nombre,
+                apellido: user.apellido,
+                id_tipo_usuario: user.id_tipo_usuario // Incluye el tipo de usuario en la respuesta
+            }
+        });
     } catch (error) {
         console.error("Error al iniciar sesión:", error);
         res.status(500).json({ error: "Error al iniciar sesión" });
@@ -36,10 +47,11 @@ const loginUser = async (req, res) => {
 };
 
 const verifyAuth = (req, res) => {
-    if (req.user) { res.status(200).json({ user: req.user }); }
-    else { res.status(401).json({ message: "No autenticado" }); }
+    if (req.user) {
+        res.status(200).json({ user: req.user });
+    } else {
+        res.status(401).json({ message: "No autenticado" });
+    }
 };
 
-
-
-module.exports = { loginUser, verifyAuth }
+module.exports = { loginUser, verifyAuth };

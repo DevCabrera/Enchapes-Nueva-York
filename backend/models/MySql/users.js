@@ -32,6 +32,10 @@ const Users = sequelize.define('usuario', {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    id_tipo_usuario: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
 }, {
     timestamps: true,
     freezeTableName: true,

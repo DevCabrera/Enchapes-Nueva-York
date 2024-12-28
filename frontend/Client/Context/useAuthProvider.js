@@ -25,6 +25,7 @@ export const useAuthProvider = () => {
         setLoading(true); // Muestra el estado de carga
         try {
             const data = await login(credentials);
+            localStorage.setItem('token', data.token); // Almacena el token en localStorage
             setUser(data.user);
         } catch (error) {
             console.error("Error al iniciar sesión:", error);
@@ -37,6 +38,7 @@ export const useAuthProvider = () => {
     const logoutUser = async () => {
         try {
             await axiosClient.post("/logout"); // Llamada al backend
+            localStorage.removeItem('token'); // Elimina el token de localStorage
         } catch (error) {
             console.error("Error al cerrar sesión:", error);
         } finally {
