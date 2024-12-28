@@ -3,7 +3,8 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { dbConnectMySql } = require("./config/mysql");
-
+const passport = require('./config/passPort');
+const session = require('express-session');
 const app = express();
 const ENGINE_DB = process.env.ENGINE_DB;
 
@@ -17,7 +18,9 @@ const start = async () => {
         app.use(express.json());
         app.use(cookieParser()); // Middleware para cookies
         app.use(express.static("storage")); // Cargar storage
-
+        // Configurar sesiones para Passport 
+        app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
+        app.use(passport.initialize()); app.use(passport.session());
         // Conexión a la base de datos
         if (ENGINE_DB === 'mysql') {
             await dbConnectMySql();
