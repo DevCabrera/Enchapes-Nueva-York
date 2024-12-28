@@ -17,12 +17,17 @@ export const createProduct = async (productoData) => {
     return response.data;
 };
 
-export const updateProduct = async (id, productoData) => {
-    const response = await axiosClient.put(`/product/${id}`, productoData, {
-        headers: { "Content-Type": "multipart/form-data" } // Asegura que las imágenes se envíen correctamente
+export const updateProduct = async (id, productData) => {
+    const formData = new FormData();
+    for (const key in productData) {
+        formData.append(key, productData[key]);
+    }
+    const response = await axiosClient.put(`/product/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" }
     });
     return response.data;
 };
+
 
 export const deleteProduct = async (id) => {
     const response = await axiosClient.delete(`/product/${id}`);

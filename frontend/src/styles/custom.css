@@ -34,3 +34,10 @@
   animation: zoom 20s infinite ease-in-out; /* Duración de 10s, se repite infinitamente */
   overflow: hidden;
 }
+
+
+/*Modal List*/
+.modal-container {
+  width: 80%; /* Ajusta este valor según tus necesidades */
+  max-width: 1200px; /* Establece un ancho máximo para evitar que sea demasiado grande */
+}

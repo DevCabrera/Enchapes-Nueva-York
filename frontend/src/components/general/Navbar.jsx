@@ -13,7 +13,7 @@ import { useAuth } from "../../../Client/Context/AuthProvider";
 export default function Navbart({ setOpenModal }) {
   const [openNav, setOpenNav] = useState(false);
   const { user, logoutUser } = useAuth(); // Obtener usuario y función de logout
-
+  console.log("Usuario autenticado:", user);
   React.useEffect(() => {
     window.addEventListener(
       "resize",
@@ -50,6 +50,20 @@ export default function Navbart({ setOpenModal }) {
           Contáctanos
         </Link>
       </Typography>
+      {user && user.id_tipo_usuario === 1 && (
+        <Typography
+          as="li"
+          variant="small"
+          className="p-1 font-normal text-white"
+        >
+          <Link
+            to="/administration"
+            className="flex items-center hover:text-[#E67E22]"
+          >
+            Administracion
+          </Link>
+        </Typography>
+      )}
     </ul>
   );
 

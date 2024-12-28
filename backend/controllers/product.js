@@ -1,5 +1,5 @@
 const Producto = require("../models/MySql/product");
-
+const cloudinary = require('cloudinary').v2;
 /**
  * Método para obtener todos los productos
  * @param {*} req
@@ -68,39 +68,31 @@ const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
         const { sku, nombre, ancho, alto, espesor, peso_m2, precio_m2 } = req.body;
-        const foto = req.file ? req.file.path : undefined;
+        const foto = req.file ? req.file.path : null;
 
-        const producto = await Producto.findByPk(id);
-
-        if (!producto) {
-            return res.status(404).json({
-                error: 'Producto no encontrado'
-            });
+        const product = await Producto.findByPk(id);
+        if (!product) {
+            return res.status(404).json({ message: "Producto no encontrado" });
         }
 
-        await producto.update({
-            sku: sku || producto.sku,
-            nombre: nombre || producto.nombre,
-            ancho: ancho || producto.ancho,
-            alto: alto || producto.alto,
-            espesor: espesor || producto.espesor,
-            peso_m2: peso_m2 || producto.peso_m2,
-            foto: foto || producto.foto,
-            precio_m2: precio_m2 || producto.precio_m2
-        });
+        if (foto) {
+            // Eliminar la imagen anterior de Cloudinary si existe
+            const publicId = product.foto ? product.foto.split('/').slice(-2).join('/').split('.')[0] : null;
+            if (publicId) {
+                await cloudinary.uploader.destroy(publicId);
+            }
+            // Actualizar la imagen con la nueva URL
+            product.foto = foto;
+        }
 
-        return res.status(200).json({
-            message: 'Producto actualizado exitosamente',
-            data: producto
-        });
+        await product.update({ sku, nombre, ancho, alto, espesor, peso_m2, precio_m2, foto: product.foto || product.foto });
+
+        res.status(200).json({ message: "Producto actualizado correctamente", data: product });
     } catch (error) {
-        console.error('Error al actualizar el producto:', error);
-        return res.status(500).json({
-            error: 'Ocurrió un error al actualizar el producto'
-        });
+        console.error("Error al actualizar producto:", error);
+        res.status(500).json({ error: "Error al actualizar el producto" });
     }
 };
-
 /**
  * Método para eliminar un producto
  * @param {*} req
@@ -109,17 +101,26 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log(`intentado deletear con: ${id}`);
+        const product = await Producto.findByPk(id);
 
-        const data = await Producto.findByPk(id);
-        if (!data) {
-            return res.status(404).json({ message: "Producto no existente" });
+        if (!product) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
         }
 
-        await data.destroy();
+        // Eliminar la imagen de Cloudinary si existe
+        if (product.foto) {
+            const publicId = product.foto.split('/').slice(-2).join('/').split('.')[0];
+            console.log(`Deleting image from Cloudinary with publicId: ${publicId}`);
+            const result = await cloudinary.uploader.destroy(publicId);
+            console.log(`Cloudinary deletion result: ${JSON.stringify(result)}`);
+        }
 
-        res.status(200).json({ message: "producto eliminado" });
+        await product.destroy();
+        res.status(200).json({ message: 'Producto eliminado correctamente' });
     } catch (error) {
-        res.status(500).json({ error: `Error al eliminar el producto: ${id}` });
+        console.error("Error al eliminar producto:", error);
+        res.status(500).json({ error: 'Error al eliminar el producto' });
     }
 };
 
