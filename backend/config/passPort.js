@@ -5,7 +5,7 @@ const Users = require("../models/MySql/users");
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/callback"
+    callbackURL: "http://localhost:3005/api/auth/google/callback" 
 },
     async (token, tokenSecret, profile, done) => {
         try {
@@ -17,8 +17,8 @@ passport.use(new GoogleStrategy({
                 email: profile.emails[0].value,
                 nombre: profile.displayName,
                 apellido: profile.name.familyName,
-                password: null, // No es necesario almacenar una contraseña
-                id_tipo_usuario: 2, // Ajusta según tu lógica de roles de usuario
+                password: null,
+                id_tipo_usuario: 2,
             });
             done(null, newUser);
         } catch (error) {

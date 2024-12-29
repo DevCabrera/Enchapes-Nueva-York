@@ -1,9 +1,8 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { useAuth } from "../../../Client/Context/AuthProvider";
-
-
-import RegisterModal from "./RegisterModal.jsx"; // Modal de registro
+import { useAuth } from "../../../Client/Context/AuthProvider.jsx";
+import RegisterModal from "../specifics/RegisterModal.jsx"; // Modal de registro
+import GoogleSign from "./GoogleSign.jsx";
 
 const LoginModal = ({ open, onClose }) => {
   const { loginUser } = useAuth(); // Obtener la función de login del contexto
@@ -72,7 +71,9 @@ const LoginModal = ({ open, onClose }) => {
           </h2>
 
           {/* Mensaje de error */}
-          {error && <div className="mb-4 text-red-500 text-center">{error}</div>}
+          {error && (
+            <div className="mb-4 text-red-500 text-center">{error}</div>
+          )}
 
           <form onSubmit={handleLoginSubmit}>
             {/* Email */}
@@ -112,8 +113,13 @@ const LoginModal = ({ open, onClose }) => {
               {isSubmitting ? "Iniciando..." : "Iniciar Sesión"}
             </button>
           </form>
-
+          <hr className="my-3" />
           {/* Botón de registro */}
+          {/* Botón de inicio de sesión con Google */}
+          <div className="mb-4">
+            <GoogleSign />
+          </div>
+
           <hr className="my-3" />
           <button
             onClick={openRegisterModal}

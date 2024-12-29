@@ -20,7 +20,7 @@ import Product from "./components/product/Product";
 import AllProducts from "./components/product/AllProducts";
 
 //Componentes de login y cuenta/perfil:
-import LoginModal from "./components/specifics/loginModal";
+import LoginModal from "./components/login/loginModal";
 import Account from "./components/account/Account";
 import { AuthProvider, useAuth } from "../Client/Context/AuthProvider";
 
