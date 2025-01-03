@@ -18,7 +18,7 @@ import Contact from "./components/specifics/Contact";
 import HomeProducts from "./components/specifics/HomeProducts";
 import Product from "./components/product/Product";
 import AllProducts from "./components/product/AllProducts";
-
+import CartProvider from "../Client/Context/CartProvider";
 //Componentes de login y cuenta/perfil:
 import LoginModal from "./components/login/loginModal";
 import Account from "./components/account/Account";
@@ -28,14 +28,17 @@ import { AuthProvider, useAuth } from "../Client/Context/AuthProvider";
 import Administration from "./components/Admin/Administration";
 
 import PropTypes from "prop-types";
+import GoogleSign from "./components/login/GoogleSign";
 
 // Configuración principal de la aplicación
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <MainContent />
-      </Router>
+      <CartProvider>
+        <Router>
+          <MainContent />
+        </Router>
+      </CartProvider>
     </AuthProvider>
   );
 }
@@ -85,6 +88,7 @@ function MainContent() {
         />
         <Route path="/products" element={<AllProducts />} />
         <Route path="/products/:sku" element={<Product />} />
+        <Route path="/login" element={<GoogleSign />} />
         <Route
           path="/administration"
           element={
