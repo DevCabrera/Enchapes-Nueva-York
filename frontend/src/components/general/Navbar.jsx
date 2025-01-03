@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Navbar,
@@ -8,17 +8,26 @@ import {
   Button,
   IconButton,
 } from "@material-tailwind/react";
+import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../../../Client/Context/AuthProvider";
+import CartDrawer from "../Cart/cartDrawer";
 
 export default function Navbart({ setOpenModal }) {
   const [openNav, setOpenNav] = useState(false);
-  const { user, logoutUser } = useAuth(); // Obtener usuario y función de logout
-  console.log("Usuario autenticado:", user);
-  React.useEffect(() => {
+  const { user, logoutUser } = useAuth();
+  const [openCart, setOpenCart] = useState(false);
+
+  useEffect(() => {
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
+    return () => {
+      window.removeEventListener(
+        "resize",
+        () => window.innerWidth >= 960 && setOpenNav(false)
+      );
+    };
   }, []);
 
   const navList = (
@@ -60,12 +69,15 @@ export default function Navbart({ setOpenModal }) {
             to="/administration"
             className="flex items-center hover:text-[#E67E22]"
           >
-            Administracion
+            Administración
           </Link>
         </Typography>
       )}
     </ul>
   );
+
+  const handleOpenCart = () => setOpenCart(true);
+  const handleCloseCart = () => setOpenCart(false);
 
   return (
     <Navbar
@@ -111,6 +123,9 @@ export default function Navbart({ setOpenModal }) {
                       d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
                     />
                   </svg>
+                </IconButton>
+                <IconButton onClick={handleOpenCart} className="text-white">
+                  <ShoppingCartIcon className="h-6 w-6" />
                 </IconButton>
               </>
             ) : (
@@ -164,6 +179,13 @@ export default function Navbart({ setOpenModal }) {
         </div>
       </div>
       <MobileNav open={openNav}>{navList}</MobileNav>
+      {user && (
+        <CartDrawer
+          open={openCart}
+          onClose={handleCloseCart}
+          token={user.token}
+        />
+      )}
     </Navbar>
   );
 }
