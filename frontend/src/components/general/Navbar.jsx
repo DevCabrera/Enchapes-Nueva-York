@@ -14,20 +14,16 @@ import CartDrawer from "../Cart/cartDrawer";
 
 export default function Navbart({ setOpenModal }) {
   const [openNav, setOpenNav] = useState(false);
-  const { user, logoutUser } = useAuth();
   const [openCart, setOpenCart] = useState(false);
+  const { user, logoutUser } = useAuth(); // Contexto de autenticación
 
   useEffect(() => {
-    window.addEventListener(
-      "resize",
-      () => window.innerWidth >= 960 && setOpenNav(false)
-    );
-    return () => {
-      window.removeEventListener(
-        "resize",
-        () => window.innerWidth >= 960 && setOpenNav(false)
-      );
+    const handleResize = () => {
+      if (window.innerWidth >= 960) setOpenNav(false);
     };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const navList = (
@@ -55,11 +51,11 @@ export default function Navbart({ setOpenModal }) {
         variant="small"
         className="p-1 font-normal text-white"
       >
-        <Link to="/Contact" className="flex items-center hover:text-[#E67E22]">
+        <Link to="/contact" className="flex items-center hover:text-[#E67E22]">
           Contáctanos
         </Link>
       </Typography>
-      {user && user.id_tipo_usuario === 1 && (
+      {user?.id_tipo_usuario === 1 && (
         <Typography
           as="li"
           variant="small"
@@ -75,9 +71,6 @@ export default function Navbart({ setOpenModal }) {
       )}
     </ul>
   );
-
-  const handleOpenCart = () => setOpenCart(true);
-  const handleCloseCart = () => setOpenCart(false);
 
   return (
     <Navbar
@@ -124,9 +117,16 @@ export default function Navbart({ setOpenModal }) {
                     />
                   </svg>
                 </IconButton>
-                <IconButton onClick={handleOpenCart} className="text-white">
+                <IconButton
+                  onClick={() => setOpenCart(true)}
+                  className="text-white"
+                >
                   <ShoppingCartIcon className="h-6 w-6" />
                 </IconButton>
+                <CartDrawer
+                  open={openCart}
+                  onClose={() => setOpenCart(false)}
+                />
               </>
             ) : (
               <Button
@@ -179,18 +179,10 @@ export default function Navbart({ setOpenModal }) {
         </div>
       </div>
       <MobileNav open={openNav}>{navList}</MobileNav>
-      {user && (
-        <CartDrawer
-          open={openCart}
-          onClose={handleCloseCart}
-          token={user.token}
-        />
-      )}
     </Navbar>
   );
 }
 
-// Validación de PropTypes
 Navbart.propTypes = {
   setOpenModal: PropTypes.func.isRequired,
 };

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import {
   Drawer,
   Typography,
@@ -15,7 +15,10 @@ import {
 } from "../../../Client/Services/cartServices";
 
 const CartDrawer = ({ open, onClose, token }) => {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
 
   const fetchCart = useCallback(async () => {
     try {
@@ -32,23 +35,33 @@ const CartDrawer = ({ open, onClose, token }) => {
     }
   }, [token, fetchCart]);
 
-  const handleUpdateQuantity = useCallback(async (productId, newQuantity) => {
-    try {
-      await updateCart(productId, newQuantity, token);
-      fetchCart();
-    } catch (error) {
-      console.error("Error al actualizar la cantidad:", error);
-    }
-  }, [token, fetchCart]);
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
-  const handleRemoveProduct = useCallback(async (productId) => {
-    try {
-      await removeFromCart(productId, token);
-      fetchCart();
-    } catch (error) {
-      console.error("Error al eliminar el producto:", error);
-    }
-  }, [token, fetchCart]);
+  const handleUpdateQuantity = useCallback(
+    async (productId, newQuantity) => {
+      try {
+        await updateCart(productId, newQuantity, token);
+        fetchCart();
+      } catch (error) {
+        console.error("Error al actualizar la cantidad:", error);
+      }
+    },
+    [token, fetchCart]
+  );
+
+  const handleRemoveProduct = useCallback(
+    async (productId) => {
+      try {
+        await removeFromCart(productId, token);
+        fetchCart();
+      } catch (error) {
+        console.error("Error al eliminar el producto:", error);
+      }
+    },
+    [token, fetchCart]
+  );
 
   const handleClearCart = useCallback(async () => {
     try {
@@ -91,20 +104,24 @@ const CartDrawer = ({ open, onClose, token }) => {
         ) : (
           cart.map((item) => (
             <div
-              key={item.id_producto}
+              key={item.id_producto || item.producto.id_producto} // Asegurarse de usar una clave única
               className="flex items-center justify-between p-2 border-b"
             >
-              <img
-                src={item.producto.imagen_url}
-                alt={item.producto.titulo}
-                className="w-16 h-16 object-cover"
-              />
-              <div className="flex-1 px-4">
-                <Typography variant="h6">{item.producto.titulo}</Typography>
-                <Typography color="gray">
-                  Precio/m²: ${item.producto.precio}
-                </Typography>
-              </div>
+              {item.producto && (
+                <>
+                  <img
+                    src={item.producto.foto}
+                    alt={item.producto.nombre}
+                    className="w-16 h-16 object-cover"
+                  />
+                  <div className="flex-1 px-4">
+                    <Typography variant="h6">{item.producto.nombre}</Typography>
+                    <Typography color="gray">
+                      Precio/m²: ${item.producto.precio_m2}
+                    </Typography>
+                  </div>
+                </>
+              )}
               <div className="flex items-center gap-2">
                 <Button
                   size="sm"
@@ -161,7 +178,7 @@ const CartDrawer = ({ open, onClose, token }) => {
       </div>
     </Drawer>
   );
-}
+};
 
 CartDrawer.propTypes = {
   open: PropTypes.bool.isRequired,

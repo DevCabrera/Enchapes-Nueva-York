@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import PropTypes from "prop-types";
-import { useAuthProvider } from "./useAuthProvider"; // Hook con la lógica de autenticación
+import { useAuthProvider } from "./useAuthProvider";
 
 // Crear el contexto de autenticación
 const AuthContext = createContext();

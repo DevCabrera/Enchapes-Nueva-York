@@ -1,38 +1,39 @@
 const jwt = require('jsonwebtoken');
 
 /**
- * Middleware para verificar el token JWT
+ * Middleware para verificar el token JWT almacenado en cookies.
  */
 const verifyToken = (req, res, next) => {
-    // Obtener el token de los headers
-
-    const token = req.cookies.authToken; // Extraer el token de la cookie
-
-    // Verificar si el token fue proporcionado
+    //console.log("Cookies recibidas:", req.cookies);
+    const token = req.cookies?.authToken;
+    //console.log("mi AuthToken", token)
     if (!token) {
-        console.error("Token no proporcionado");
-        return res.status(401).json({ message: "Acceso denegado, token no proporcionado" });
+        console.error("Token no encontrado en las cookies");
+        return res.status(401).json({ message: "Token no proporcionado" });
     }
 
     try {
-        // Verificar el token con la clave secreta
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // Adjuntar la información del usuario al request
         req.user = decoded;
-
-        // Continuar al siguiente middleware o controlador
+      //  console.log("body del decoded('descriptada')", decoded)
         next();
     } catch (error) {
-        console.error("Token inválido:", error);
+        console.error("Error al verificar el token:", error.message);
         return res.status(401).json({ message: "Token inválido o expirado" });
     }
 };
+
+/**
+ * Middleware para verificar si el usuario tiene rol de administrador.
+ */
 const isAdmin = (req, res, next) => {
-    if (req.user && req.user.id_tipo_usuario === 1) { next(); }
-    else {
-        return res.status(403).json({ message: "Acceso denegado, se requiere rol de administrador" });
+    if (req.user && req.user.id_tipo_usuario === 1) {
+        // El usuario es administrador, continuar
+        next();
+    } else {
+        // El usuario no tiene rol de administrador
+        return res.status(403).json({ message: "Acceso denegado: se requiere rol de administrador" });
     }
 };
 
-module.exports = { isAdmin, verifyToken };
+module.exports = { verifyToken, isAdmin };

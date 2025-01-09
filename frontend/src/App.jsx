@@ -5,7 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-//Componentes Generales:
+// Componentes Generales:
 import Footer from "./components/general/Footer";
 import Navbart from "./components/general/Navbar";
 import Carouselw from "./components/general/Carrusel";
@@ -13,24 +13,22 @@ import Expoir from "./components/general/Expo";
 import Gallery from "./components/general/Gallery";
 import AboutUs from "./components/general/AboutUs";
 import IdeasHome from "./components/general/IdeasHome";
-//Especificos para productos
+// Específicos para productos
 import Contact from "./components/specifics/Contact";
 import HomeProducts from "./components/specifics/HomeProducts";
 import Product from "./components/product/Product";
 import AllProducts from "./components/product/AllProducts";
 import CartProvider from "../Client/Context/CartProvider";
-//Componentes de login y cuenta/perfil:
+// Componentes de login y cuenta/perfil:
 import LoginModal from "./components/login/loginModal";
 import Account from "./components/account/Account";
 import { AuthProvider, useAuth } from "../Client/Context/AuthProvider";
-
-//componentes para administracion:
+// Componentes para administración:
 import Administration from "./components/Admin/Administration";
 
 import PropTypes from "prop-types";
 import GoogleSign from "./components/login/GoogleSign";
 
-// Configuración principal de la aplicación
 function App() {
   return (
     <AuthProvider>
@@ -43,21 +41,23 @@ function App() {
   );
 }
 
-// Componente que contiene la lógica principal
 function MainContent() {
-  const [isLoginOpen, setIsLoginOpen] = useState(false); // Control del modal de login
-  const { loginUser, user } = useAuth(); // Contexto de autenticación
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const { user, loginUser, loading } = useAuth(); // Añadido `loading` para controlar la carga inicial.
 
+  // Rutas protegidas para administrar permisos de acceso
   const ProtectedRoute = ({ children }) => {
-    const { user } = useAuth();
+    if (loading) return null; // Renderizar nada mientras se verifica la autenticación.
     return user && user.id_tipo_usuario === 1 ? children : <Navigate to="/" />;
   };
+
   ProtectedRoute.propTypes = {
     children: PropTypes.node.isRequired,
   };
+
   return (
     <>
-      <Navbart setOpenModal={setIsLoginOpen} user={user} />
+      <Navbart setOpenModal={setIsLoginOpen} />
       <Routes>
         <Route
           path="/"
@@ -99,22 +99,18 @@ function MainContent() {
         />
         <Route path="/account" element={<Account />} />
       </Routes>
-
-      {/* Modal de login */}
       <LoginModal
         open={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
-        onLogin={loginUser} // Función del contexto
+        onLogin={loginUser}
       />
-
       <Footer />
     </>
   );
 }
 
-// Componente Home para la página principal
 function Home({ setIsLoginOpen }) {
-  const { user, logoutUser } = useAuth(); // Acceso al estado y logout
+  const { user, logoutUser } = useAuth();
 
   return (
     <>
@@ -122,17 +118,25 @@ function Home({ setIsLoginOpen }) {
       <AboutUs />
       <IdeasHome />
       <Expoir />
-      {/* Botones de Login/Logout */}
       {user ? (
-        <button onClick={logoutUser}></button>
+        <button
+          onClick={logoutUser}
+          className="bg-red-500 text-white px-4 py-2 rounded"
+        >
+          Cerrar Sesión
+        </button>
       ) : (
-        <button onClick={() => setIsLoginOpen(true)}></button>
+        <button
+          onClick={() => setIsLoginOpen(true)}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Iniciar Sesión
+        </button>
       )}
     </>
   );
 }
 
-// Validación de PropTypes para Home
 Home.propTypes = { setIsLoginOpen: PropTypes.func.isRequired };
 
 export default App;

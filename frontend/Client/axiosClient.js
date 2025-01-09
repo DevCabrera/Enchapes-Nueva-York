@@ -6,15 +6,17 @@ const axiosClient = axios.create({
     headers: {
         "Content-Type": "application/json",
     },
-    withCredentials: true, // Enviar cookies con las solicitudes
+    withCredentials: true, // Esto permite enviar cookies automáticamente
 });
 
-
 axiosClient.interceptors.response.use(
-    response => response,
-    error => {
-        // Maneja el error aquí antes de pasarlo
-        console.error("Error en la respuesta de Axios:", error.response || error.message);
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            console.warn("No autenticado. Redirigiendo al login...");
+            // Opcional: redirigir al usuario al login
+            // window.location.href = "/login"; 
+        }
         return Promise.reject(error);
     }
 );

@@ -17,11 +17,11 @@ const getUsers = async (req, res) => {
         // Obtener todos los usuarios
         const users = await Users.findAll({
             attributes: ['email', 'nombre', 'apellido'],
-            include:[
+            include: [
                 {
                     model: Direccion,
-                    as:'direcciones',
-                    attributes:['direccion']
+                    as: 'direcciones',
+                    attributes: ['direccion']
                 }
             ]
         });
@@ -112,15 +112,16 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { email } = req.params;
-        const { nombre, apellido, celular } = req.body; // Eliminamos password aquí
+        console.log("Email recibido en la ruta:", email);
+        console.log("Datos recibidos en el cuerpo:", req.body);
+
+        const { nombre, apellido, celular } = req.body;
 
         const user = await Users.findOne({ where: { email } });
-
         if (!user) {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
 
-        // Validar y actualizar solo los campos enviados
         const updatedData = {};
         if (nombre) updatedData.nombre = nombre;
         if (apellido) updatedData.apellido = apellido;
@@ -142,6 +143,7 @@ const updateUser = async (req, res) => {
         res.status(500).json({ error: "Error al actualizar el usuario" });
     }
 };
+
 /**
  * Método para cambiar password y separarla de las otras peticiones
  * @param {*} req

@@ -42,21 +42,26 @@ const addToCart = async (req, res) => {
             carrito = await Carrito.create({ email });
         }
 
+        let producto = await Producto.findByPk(id_producto);
+
+        if (!producto) {
+            return res.status(404).json({ message: "Producto no encontrado" });
+        }
+
         let productoEnCarrito = await CarroProd.findOne({
             where: { id_carrito: carrito.id_carrito, id_producto },
         });
 
         if (productoEnCarrito) {
             productoEnCarrito.cantidad += cantidad;
-            productoEnCarrito.subtotal += cantidad * productoEnCarrito.producto.precio;
+            productoEnCarrito.subtotal += cantidad * producto.precio_m2;
             await productoEnCarrito.save();
         } else {
-            const producto = await Producto.findByPk(id_producto);
             await CarroProd.create({
                 id_carrito: carrito.id_carrito,
                 id_producto,
                 cantidad,
-                subtotal: cantidad * producto.precio,
+                subtotal: cantidad * producto.precio_m2,
             });
         }
 
@@ -66,6 +71,8 @@ const addToCart = async (req, res) => {
         res.status(500).json({ message: "Error al agregar producto al carrito" });
     }
 };
+
+
 
 // Actualizar la cantidad de un producto en el carrito
 const updateCart = async (req, res) => {
@@ -82,8 +89,14 @@ const updateCart = async (req, res) => {
             return res.status(404).json({ message: "Producto no encontrado en el carrito" });
         }
 
+        let producto = await Producto.findByPk(id_producto);
+
+        if (!producto) {
+            return res.status(404).json({ message: "Producto no encontrado" });
+        }
+
         productoEnCarrito.cantidad = cantidad;
-        productoEnCarrito.subtotal = cantidad * productoEnCarrito.producto.precio;
+        productoEnCarrito.subtotal = cantidad * producto.precio_m2;
         await productoEnCarrito.save();
 
         res.status(200).json({ message: "Producto actualizado en el carrito" });
@@ -92,6 +105,7 @@ const updateCart = async (req, res) => {
         res.status(500).json({ message: "Error al actualizar producto en el carrito" });
     }
 };
+
 
 // Eliminar un producto del carrito
 const removeFromCart = async (req, res) => {

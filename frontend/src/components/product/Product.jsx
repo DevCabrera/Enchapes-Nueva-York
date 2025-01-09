@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getProduct } from "../../../Client/Services/productServices";
+import { addToCart } from "../../../Client/Services/cartServices";
 import { Button, Typography } from "@material-tailwind/react";
+import { useAuth } from "../../../Client/Context/AuthProvider";
 
 const Product = () => {
   const formatPriceCLP = (price) => {
@@ -10,8 +12,11 @@ const Product = () => {
       currency: "CLP",
     }).format(price);
   };
-  const { sku } = useParams(); // Obtener SKU desde los parámetros de la URL
+
+  const { sku } = useParams();
   const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -27,6 +32,17 @@ const Product = () => {
 
   if (!product) return <div>Cargando...</div>;
 
+  const handleAddToCart = async () => {
+    try {
+      await addToCart(product, quantity, user.token);
+      console.log(
+        `Producto agregado al carrito: ${product.nombre}, Cantidad: ${quantity}`
+      );
+    } catch (error) {
+      console.error("Error al agregar el producto al carrito:", error);
+    }
+  };
+
   return (
     <div className="flex justify-center mt-10 space-x-8">
       <div className="h-[400px] w-[600px] mt-10 ml-[10px]">
@@ -37,43 +53,38 @@ const Product = () => {
         />
       </div>
       <div className="max-w-md p-6 bg-white rounded-lg shadow-lg">
-        {/* SKU */}
         <Typography className="text-sm text-gray-500 mb-1">
           SKU: {product.sku}
         </Typography>
-
-        {/* Nombre del producto */}
         <Typography variant="h3" className="font-bold text-gray-800 mb-2">
           {product.nombre}
         </Typography>
-
-        {/* Precio */}
         <Typography variant="h4" className="text-gray-700 mb-1">
           {formatPriceCLP(product.precio_m2)}
         </Typography>
         <Typography className="text-sm text-gray-500 mb-4">
           Impuesto incluido
         </Typography>
-
-        {/* Cantidad */}
         <div className="mb-4">
           <label htmlFor="quantity" className="text-sm text-gray-500">
-            Cantidad en m2
+            Cantidad en m²
           </label>
           <input
             id="quantity"
             type="number"
-            defaultValue={1}
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
             className="w-16 p-2 mt-1 text-center border border-gray-300 rounded-md"
           />
         </div>
-
-        {/* Botón de compra */}
-        <Button color="red" size="lg" className="w-full mb-6">
+        <Button
+          color="red"
+          size="lg"
+          className="w-full mb-6"
+          onClick={handleAddToCart}
+        >
           Agregar Compra
         </Button>
-
-        {/* Descripción del producto */}
         <Typography variant="h5" className="font-semibold text-gray-800 mb-3">
           {product.nombre}
         </Typography>
@@ -81,12 +92,10 @@ const Product = () => {
           <li>Ancho: {product.ancho} cm</li>
           <li>Alto: {product.alto} cm</li>
           <li>Espesor: {product.espesor} cm</li>
-          <li>Peso M2: {product.peso_m2} kg</li>
-          <li>Valor por Metro Cuadrado: {product.precio_m2}</li>
-          <li>Rendimiento considera Cantería de 1cm aprox.</li>
+          <li>Peso m²: {product.peso_m2} kg</li>
+          <li>Valor por Metro Cuadrado: {formatPriceCLP(product.precio_m2)}</li>
+          <li>Rendimiento considera Cantería de 1 cm aprox.</li>
         </ul>
-
-        {/* Iconos de redes sociales */}
         <div className="flex space-x-4 mt-6 justify-center text-xl text-gray-600">
           <a href="#">
             <i className="fab fa-whatsapp"></i>

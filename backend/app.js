@@ -17,7 +17,7 @@ app.use(cors({
     origin: 'http://localhost:5173', // Reemplaza con la URL de tu frontend
     credentials: true,
 }));
-
+app.use(cookieParser());
 // Configurar encabezados de seguridad con helmet
 app.use(helmet({
     contentSecurityPolicy: {
@@ -33,11 +33,23 @@ app.use(helmet({
         },
     },
 }));
+const sessionOptions = {
+    secret: process.env.SESSION_SECRET || 'your_secret_key', // Secreto usado para firmar la cookie de sesión
+    resave: false, // No guarda la sesión en el almacenamiento si no ha cambiado
+    saveUninitialized: false, // No guarda sesiones vacías
+    cookie: {
+        httpOnly: true, // La cookie no es accesible desde JavaScript en el navegador
+        secure: false, // Solo se envía en HTTPS
+        sameSite: 'strict', // Previene ataques CSRF al restringir la cookie al mismo origen
+        maxAge: 1000 * 60 * 60 * 24, // Tiempo de vida de la cookie (1 día en milisegundos)
+    },
+};
+
+app.use(session(sessionOptions));
 
 app.use(express.json());
-app.use(cookieParser());
+
 app.use(express.static('storage'));
-app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 

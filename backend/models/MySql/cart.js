@@ -18,6 +18,11 @@ const Carrito = sequelize.define(
             type: DataTypes.ENUM("pendiente", "pagado", "cancelado"),
             defaultValue: "pendiente",
         },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+        },
     },
     {
         timestamps: true,

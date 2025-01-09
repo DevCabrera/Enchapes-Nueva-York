@@ -31,15 +31,24 @@ const PersonalInfo = () => {
         ...(formData.celular !== user.celular && { celular: formData.celular }),
       };
 
+      console.log("Datos enviados a updateUser:", updatedData);
+
       const response = await updateUser(formData.email, updatedData);
+
+      console.log("Respuesta del servidor:", response);
+
       setUser((prevUser) => ({
         ...prevUser,
-        ...response.user, // Actualiza solo los datos relevantes
+        ...response.user,
       }));
+
       alert("Información actualizada exitosamente");
       setIsEditable(false);
     } catch (error) {
-      console.error("Error al actualizar usuario:", error);
+      console.error(
+        "Error al actualizar usuario:",
+        error.response || error.message
+      );
       alert("Hubo un problema al actualizar la información");
     }
   };

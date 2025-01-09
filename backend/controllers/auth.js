@@ -1,13 +1,20 @@
 const Users = require("../models/MySql/users");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const TipoUsuario = require("../models/MySql/userRol");
 
-// Función para manejar el login
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await Users.findOne({ where: { email } });
+        const user = await Users.findOne({
+            where: { email },
+            include: {
+                model: TipoUsuario,
+                as: "tipoUsuario",
+                attributes: ["nombre"],
+            },
+        });
         if (!user) {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
@@ -17,19 +24,18 @@ const loginUser = async (req, res) => {
             return res.status(400).json({ message: "Contraseña incorrecta" });
         }
 
-        // Crear el token JWT
         const token = jwt.sign({
             email: user.email,
             id_tipo_usuario: user.id_tipo_usuario
         }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-        // Configurar la cookie con opciones seguras
         res.cookie("authToken", token, {
-            httpOnly: true, // Solo accesible desde el servidor
-            secure: process.env.NODE_ENV === "production", // Solo HTTPS en producción
-            sameSite: "strict", // Protege contra ataques CSRF
-            maxAge: 60 * 60 * 1000, // 1 hora
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production" ? true : false, // `false` en desarrollo
+            sameSite: "strict",
+            maxAge: 1000 * 60 * 60 * 24, // 1 día en milisegundos
         });
+
 
         res.status(200).json({
             message: "Inicio de sesión exitoso",
@@ -37,14 +43,17 @@ const loginUser = async (req, res) => {
                 email: user.email,
                 nombre: user.nombre,
                 apellido: user.apellido,
-                id_tipo_usuario: user.id_tipo_usuario // Incluye el tipo de usuario en la respuesta
+                id_tipo_usuario: user.id_tipo_usuario,
+                tipo_usuario: user.tipoUsuario?.nombre || null,
             }
         });
+
     } catch (error) {
         console.error("Error al iniciar sesión:", error);
         res.status(500).json({ error: "Error al iniciar sesión" });
     }
 };
+
 
 const verifyAuth = (req, res) => {
     if (req.user) {
@@ -53,5 +62,6 @@ const verifyAuth = (req, res) => {
         res.status(401).json({ message: "No autenticado" });
     }
 };
+
 
 module.exports = { loginUser, verifyAuth };

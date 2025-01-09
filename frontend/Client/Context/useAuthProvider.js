@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import { login } from "../Services/authServices"; // Servicio de autenticación
-import axiosClient from "../axiosClient"; // Cliente Axios
+import axiosClient from "../axiosClient";
+import { Navigate } from "react-router-dom";
+
+
 
 export const useAuthProvider = () => {
     const [user, setUser] = useState(null);
@@ -9,10 +11,11 @@ export const useAuthProvider = () => {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const response = await axiosClient.get("/check-auth");
-                setUser(response.data.user);
+                const response = await axiosClient.get("/auth/check-auth"); // Cookie enviada automáticamente
+                setUser(response.data.user); // Usuario autenticado
             } catch (error) {
-                console.error("Error al verificar la autenticación:", error);
+                console.warn("Usuario no autenticado:", error.message);
+                setUser(null); // No autenticado
             } finally {
                 setLoading(false);
             }
@@ -21,28 +24,27 @@ export const useAuthProvider = () => {
         checkAuth();
     }, []);
 
+
     const loginUser = async (credentials) => {
-        setLoading(true); // Muestra el estado de carga
+        setLoading(true);
         try {
-            const data = await login(credentials);
-            localStorage.setItem('token', data.token); // Almacena el token en localStorage
-            setUser(data.user);
+            const response = await axiosClient.post("/auth/login", credentials);
+            setUser(response.data.user); // Guardar datos del usuario tras el login
         } catch (error) {
-            console.error("Error al iniciar sesión:", error);
+            console.error("Error al iniciar sesión:", error.message);
             throw error;
         } finally {
-            setLoading(false); // Oculta el estado de carga
+            setLoading(false);
         }
     };
 
     const logoutUser = async () => {
         try {
-            await axiosClient.post("/logout"); // Llamada al backend
-            localStorage.removeItem('token'); // Elimina el token de localStorage
+            await axiosClient.get("/auth/logout"); // Cerrar sesión
+            setUser(null); // Limpiar el estado del usuario
+            Navigate("/");
         } catch (error) {
-            console.error("Error al cerrar sesión:", error);
-        } finally {
-            setUser(null); // Limpia el estado del usuario
+            console.error("Error al cerrar sesión:", error.message);
         }
     };
 
