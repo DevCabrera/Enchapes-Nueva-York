@@ -1,7 +1,8 @@
-const { DataTypes } = require("sequelize");
-const { sequelize } = require("../../config/mysql");
 const Carrito = require("./cart");
 const Producto = require("./product");
+
+const { DataTypes } = require("sequelize");
+const { sequelize } = require("../../config/mysql");
 
 const CarroProd = sequelize.define(
     "carro_prod",
@@ -11,10 +12,18 @@ const CarroProd = sequelize.define(
             primaryKey: true,
             autoIncrement: true,
         },
+        id_carro: {
+            type: DataTypes.INTEGER,
+            allowNull: false, // Obligatorio
+        },
+        id_producto: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         cantidad: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: 1, // Por defecto, se agrega una unidad del producto
+            defaultValue: 1,
         },
         subtotal: {
             type: DataTypes.INTEGER,
@@ -22,21 +31,11 @@ const CarroProd = sequelize.define(
         },
     },
     {
-        timestamps: true,
-        freezeTableName: true, // Evita que Sequelize pluralice o cambie el nombre
-
+        timestamps: false,
+        freezeTableName: true,
     }
 );
 
-// Relaciones de carrito a carro_prod y de producto a este
-CarroProd.belongsTo(Carrito, {
-    foreignKey: "id_carrito",
-    as: "carrito",
-});
 
-CarroProd.belongsTo(Producto, {
-    foreignKey: "id_producto",
-    as: "producto",
-});
 
 module.exports = CarroProd;

@@ -117,6 +117,9 @@ export default function Navbart({ setOpenModal }) {
                     />
                   </svg>
                 </IconButton>
+                <Link to="/cart">
+                  <ShoppingCartIcon className="h-6 w-6" />
+                </Link>
                 <IconButton
                   onClick={() => setOpenCart(true)}
                   className="text-white"

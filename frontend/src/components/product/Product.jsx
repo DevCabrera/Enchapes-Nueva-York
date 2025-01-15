@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { getProduct } from "../../../Client/Services/productServices";
 import { addToCart } from "../../../Client/Services/cartServices";
 import { Button, Typography } from "@material-tailwind/react";
-import { useAuth } from "../../../Client/Context/AuthProvider";
 
 const Product = () => {
   const formatPriceCLP = (price) => {
@@ -16,7 +15,6 @@ const Product = () => {
   const { sku } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const { user } = useAuth();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -34,7 +32,7 @@ const Product = () => {
 
   const handleAddToCart = async () => {
     try {
-      await addToCart(product, quantity, user.token);
+      await addToCart(product, quantity);
       console.log(
         `Producto agregado al carrito: ${product.nombre}, Cantidad: ${quantity}`
       );

@@ -28,6 +28,7 @@ import Administration from "./components/Admin/Administration";
 
 import PropTypes from "prop-types";
 import GoogleSign from "./components/login/GoogleSign";
+import CartDetails from "./components/Cart/CartDetails";
 
 function App() {
   return (
@@ -89,6 +90,8 @@ function MainContent() {
         <Route path="/products" element={<AllProducts />} />
         <Route path="/products/:sku" element={<Product />} />
         <Route path="/login" element={<GoogleSign />} />
+        <Route path="/cart" element={<CartDetails />} />
+
         <Route
           path="/administration"
           element={

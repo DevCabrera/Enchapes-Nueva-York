@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getCart, addToCart, updateCart, removeFromCart, clearCart } = require('../controllers/cart');
+const { getCart, addToCart, updateCart, removeFromCart, clearCart, updateCartStatus } = require('../controllers/cart');
 const { verifyToken } = require('../middlewares/authMiddlerawe');
 
 // Obtener el carrito del usuario autenticado
@@ -17,5 +17,9 @@ router.delete('/remove', verifyToken, removeFromCart);
 
 // Vaciar el carrito
 router.delete('/clear', verifyToken, clearCart);
+
+//status carro
+router.put('/status', verifyToken, updateCartStatus);
+
 
 module.exports = router;
