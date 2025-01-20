@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 // Componentes Generales:
 import Footer from "./components/general/Footer";
@@ -29,6 +30,9 @@ import Administration from "./components/Admin/Administration";
 import PropTypes from "prop-types";
 import GoogleSign from "./components/login/GoogleSign";
 import CartDetails from "./components/Cart/CartDetails";
+import UploadPayment from "./components/Cart/Payment";
+import OrderClient from "./components/Orders/OrderClient";
+import PaymentAdministration from "./components/Admin/PaymentAdministration";
 
 function App() {
   return (
@@ -48,14 +52,27 @@ function MainContent() {
 
   // Rutas protegidas para administrar permisos de acceso
   const ProtectedRoute = ({ children }) => {
-    if (loading) return null; // Renderizar nada mientras se verifica la autenticación.
+    if (loading) return null;
+    console.log("Cargando autenticación...");
     return user && user.id_tipo_usuario === 1 ? children : <Navigate to="/" />;
+  };
+  const ProtectedRoutePayment = ({ children }) => {
+    if (loading) return null;
+    console.log("Cargando autenticación...");
+    return (user && user.id_tipo_usuario === 1) ||
+      (user && user.id_tipo_usuario === 2) ? (
+      children
+    ) : (
+      <Navigate to="/" />
+    );
   };
 
   ProtectedRoute.propTypes = {
     children: PropTypes.node.isRequired,
   };
-
+  ProtectedRoutePayment.propTypes = {
+    children: PropTypes.node.isRequired,
+  };
   return (
     <>
       <Navbart setOpenModal={setIsLoginOpen} />
@@ -91,7 +108,22 @@ function MainContent() {
         <Route path="/products/:sku" element={<Product />} />
         <Route path="/login" element={<GoogleSign />} />
         <Route path="/cart" element={<CartDetails />} />
-
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoutePayment>
+              <Payment />
+            </ProtectedRoutePayment>
+          }
+        />
+        <Route
+          path="/payment-administration"
+          element={
+            <ProtectedRoute>
+              <PaymentAdministration />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/administration"
           element={
@@ -100,6 +132,16 @@ function MainContent() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/my-orders"
+          element={
+            <ProtectedRoutePayment>
+              <OrderClient />
+            </ProtectedRoutePayment>
+          }
+        />
+
         <Route path="/account" element={<Account />} />
       </Routes>
       <LoginModal
@@ -111,31 +153,26 @@ function MainContent() {
     </>
   );
 }
+function Payment() {
+  const location = useLocation();
+  const { idCarro } = location.state || {};
 
-function Home({ setIsLoginOpen }) {
-  const { user, logoutUser } = useAuth();
+  if (!idCarro) {
+    console.error("ID del carrito no encontrado en el estado.");
+    return <p>No tienes un carrito activo para realizar el pago.</p>;
+  }
 
+  console.log("ID del Carrito:", idCarro);
+  return <UploadPayment idCarro={idCarro} />;
+}
+
+function Home() {
   return (
     <>
       <HomeProducts />
       <AboutUs />
       <IdeasHome />
       <Expoir />
-      {user ? (
-        <button
-          onClick={logoutUser}
-          className="bg-red-500 text-white px-4 py-2 rounded"
-        >
-          Cerrar Sesión
-        </button>
-      ) : (
-        <button
-          onClick={() => setIsLoginOpen(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Iniciar Sesión
-        </button>
-      )}
     </>
   );
 }

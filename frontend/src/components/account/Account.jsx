@@ -10,12 +10,14 @@ import {
   UserCircleIcon,
   LockClosedIcon,
   MapPinIcon,
+  ShoppingBagIcon
 } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../Client/Context/AuthProvider"; // Ajusta la ruta según tu estructura
 import PersonalInfo from "./PersonalInfo";
 import ChangePass from "./ChangePass";
 import AddressClient from "./AddressClient";
+import OrderClient from "../Orders/OrderClient";
 
 const Account = () => {
   const { user } = useAuth(); // Obtener el usuario del contexto
@@ -46,6 +48,12 @@ const Account = () => {
       value: "address",
       icon: MapPinIcon,
       component: <AddressClient />,
+    },
+    {
+      label: "Mis Compras",
+      value: "orders",
+      icon: ShoppingBagIcon,
+      component: <OrderClient />,
     },
   ];
 

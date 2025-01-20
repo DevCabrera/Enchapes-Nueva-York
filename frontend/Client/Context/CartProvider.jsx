@@ -12,41 +12,41 @@ import {
 
 const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const [idCarro, setIdCarro] = useState(null); // Manejo del ID del carrito
   const { user } = useAuth();
 
-  //login para el carro
   useEffect(() => {
     const fetchCart = async () => {
       if (user) {
         try {
           const data = await getCart();
           setCart(data.productos || []);
+          setIdCarro(data.id_carro); // Guardar el ID del carrito
         } catch (error) {
           console.error("Error al obtener el carrito:", error);
         }
+      } else {
+        setCart([]);
+        setIdCarro(null); // Reinicia el ID del carrito si no hay usuario
       }
     };
     fetchCart();
-  }, [user]); // Recargar el carrito cuando el usuario cambia
-  // Función genérica para sincronizar el estado del carrito
+  }, [user]);
+
   const syncCart = async () => {
     try {
       const data = await getCart();
       setCart(data.productos || []);
+      setIdCarro(data.id_carro);
     } catch (error) {
       console.error("Error al sincronizar el carrito:", error.message);
     }
   };
 
-  useEffect(() => {
-    syncCart();
-  }, []);
-
   const addProduct = async (product, quantity) => {
     try {
       await addToCart(product, quantity);
-      const updatedCart = await getCart();
-      setCart(updatedCart.productos || []);
+      await syncCart();
     } catch (error) {
       console.error("Error al agregar producto:", error);
     }
@@ -59,7 +59,7 @@ const CartProvider = ({ children }) => {
     }
     try {
       await updateCart(productId, quantity);
-      syncCart();
+      await syncCart();
     } catch (error) {
       console.error("Error al actualizar cantidad:", error.message);
     }
@@ -68,7 +68,7 @@ const CartProvider = ({ children }) => {
   const removeProduct = async (productId) => {
     try {
       await removeFromCart(productId);
-      syncCart();
+      await syncCart();
     } catch (error) {
       console.error("Error al eliminar producto:", error.message);
     }
@@ -78,6 +78,7 @@ const CartProvider = ({ children }) => {
     try {
       await clearCart();
       setCart([]);
+      setIdCarro(null); // Reinicia el ID del carrito al vaciarlo
     } catch (error) {
       console.error("Error al vaciar el carrito:", error.message);
     }
@@ -87,6 +88,7 @@ const CartProvider = ({ children }) => {
     <CartContext.Provider
       value={{
         cart,
+        idCarro, // Ahora el ID del carrito está disponible
         addToCart: addProduct,
         updateQuantity: updateProductQuantity,
         removeFromCart: removeProduct,

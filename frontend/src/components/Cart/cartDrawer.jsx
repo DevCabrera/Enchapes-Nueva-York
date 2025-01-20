@@ -7,6 +7,7 @@ import {
   Input,
 } from "@material-tailwind/react";
 import { useCart } from "../../../Client/Context/cartContext";
+import { Navigate } from "react-router-dom";
 
 const CartDrawer = ({ open, onClose }) => {
   const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
@@ -112,7 +113,9 @@ const CartDrawer = ({ open, onClose }) => {
         >
           Vaciar Carrito
         </Button>
-        <Button color="green">Proceder al Pago</Button>
+        <Button color="green" onClick={() => Navigate("/cart")}>
+          Proceder al Pago
+        </Button>
       </div>
     </Drawer>
   );

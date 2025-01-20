@@ -1,14 +1,22 @@
 import { useEffect, useState } from "react";
 import { Typography, Button } from "@material-tailwind/react";
 import { useCart } from "../../../Client/Context/cartContext";
+import { useAuth } from "../../../Client/Context/AuthProvider"; // Asegúrate de importar
 import { useNavigate } from "react-router-dom";
 
 const CartDetails = () => {
-  const { cart, clearCart, updateQuantity, removeFromCart } = useCart();
+  const { cart, clearCart, updateQuantity, removeFromCart, idCarro } =
+    useCart();
+  const { user, loading } = useAuth();
   const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
 
-  // Calcular el precio total del carrito
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/"); // Redirigir al home si no está autenticado
+    }
+  }, [loading, user, navigate]);
+
   useEffect(() => {
     const total = cart.reduce(
       (acc, item) => acc + item.cantidad * item.producto.precio_m2,
@@ -17,17 +25,9 @@ const CartDetails = () => {
     setTotalPrice(total);
   }, [cart]);
 
-  // Manejar la actualización de cantidades
-  const handleQuantityChange = (productId, quantity) => {
-    if (quantity > 0) {
-      updateQuantity(productId, quantity);
-    }
-  };
-
-  // Manejar la eliminación de un producto
-  const handleRemoveProduct = (productId) => {
-    removeFromCart(productId);
-  };
+  if (loading) {
+    return <p>Cargando...</p>; // Mostrar un mensaje de carga mientras se verifica la autenticación
+  }
 
   return (
     <div className="p-6">
@@ -61,10 +61,7 @@ const CartDetails = () => {
                   type="number"
                   value={item.cantidad}
                   onChange={(e) =>
-                    handleQuantityChange(
-                      item.id_producto,
-                      Number(e.target.value)
-                    )
+                    updateQuantity(item.id_producto, Number(e.target.value))
                   }
                   className="w-16 border rounded text-center"
                 />
@@ -73,7 +70,7 @@ const CartDetails = () => {
                 size="sm"
                 color="red"
                 variant="outlined"
-                onClick={() => handleRemoveProduct(item.id_producto)}
+                onClick={() => removeFromCart(item.id_producto)}
               >
                 Eliminar
               </Button>
@@ -87,7 +84,20 @@ const CartDetails = () => {
               <Button color="red" onClick={clearCart}>
                 Vaciar Carrito
               </Button>
-              <Button color="green" onClick={() => navigate("/checkout")}>
+              <Button
+                color="green"
+                onClick={() => {
+                  if (!idCarro) {
+                    console.error("ID del carrito no disponible.");
+                    return;
+                  }
+                  console.log(
+                    "Navegando a /payment con ID del carrito:",
+                    idCarro
+                  );
+                  navigate("/payment", { state: { idCarro } });
+                }}
+              >
                 Proceder al Pago
               </Button>
             </div>
