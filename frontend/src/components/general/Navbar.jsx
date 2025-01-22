@@ -74,7 +74,7 @@ export default function Navbart({ setOpenModal }) {
 
   return (
     <Navbar
-      className="max-w-full bg-[#B22222] top-0"
+      className="max-w-full bg-[#353535] top-0"
       style={{ border: "0px", borderRadius: "0px" }}
     >
       <div className="flex items-center justify-between text-white">

@@ -1,21 +1,21 @@
 /* src/styles/custom.css */
 @keyframes zoom {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.01); /* Zoom in */
-    }
-    100% {
-      transform: scale(1); /* Zoom out */
-    }
+  0% {
+    transform: scale(1);
   }
-  
-  .animate-zoom {
-    animation: zoom 15s infinite ease-in-out; /* Duración de 10s, se repite infinitamente */
-    overflow: hidden; /* Evita que la imagen se desborde */
+  50% {
+    transform: scale(1.01); /* Zoom in */
   }
-  
+  100% {
+    transform: scale(1); /* Zoom out */
+  }
+}
+
+.animate-zoom {
+  animation: zoom 15s infinite ease-in-out; /* Duración de 10s, se repite infinitamente */
+  overflow: hidden; /* Evita que la imagen se desborde */
+}
+
 /*carrusel
 /* src/styles/custom.css */
 @keyframes zoom {
@@ -35,9 +35,15 @@
   overflow: hidden;
 }
 
-
 /*Modal List*/
 .modal-container {
   width: 80%; /* Ajusta este valor según tus necesidades */
   max-width: 1200px; /* Establece un ancho máximo para evitar que sea demasiado grande */
 }
+
+body {
+  background: linear-gradient(to bottom, #D2D7DF, #FFFFFF);
+  min-height: 100vh;
+  margin: 0;
+}
+

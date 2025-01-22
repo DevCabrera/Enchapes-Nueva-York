@@ -44,7 +44,7 @@ export default function IdeasHome() {
 
         <div className="text-center mt-6">
             <Link to="/gallery">
-          <button className="bg-[#B22222] text-white py-2 px-6 rounded-md ">
+          <button className="bg-[#2c4255] text-white py-2 px-6 rounded-md ">
             Más Ideas
           </button>
           </Link>

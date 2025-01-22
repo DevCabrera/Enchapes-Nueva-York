@@ -9,7 +9,7 @@ export default function Carouselw() {
           alt="image 1"
           className="h-full w-full object-cover animate-zoomc"
         />
-        <div className="absolute inset-0 grid h-full w-full place-items-center bg-black/75">
+        <div className="absolute inset-0 grid h-full w-full place-items-center bg-black/55">
           <div className="w-3/4 text-center md:w-2/4">
             <Typography
               variant="h1"
@@ -27,7 +27,9 @@ export default function Carouselw() {
             </Typography>
             <div className="flex justify-center gap-2">
               <Button size="lg" color="white">
-                Explorar
+              <Link to="/products">
+                  <a className="flex items-center">Revestimientos</a>
+                </Link>
               </Button>
               <Button size="lg" color="white" variant="text" to="/home">
                 <Link to="/gallery">

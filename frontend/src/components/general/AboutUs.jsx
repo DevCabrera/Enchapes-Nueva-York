@@ -1,6 +1,6 @@
 export default function AboutUs() {
     return (
-      <section className="bg-blue-gray-400 text-white py-16 mb-8 shadow-lg">
+      <section className="bg-[#121B22] text-white py-16 mb-8 shadow-lg">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center">
           
           {/* Columna de Texto */}

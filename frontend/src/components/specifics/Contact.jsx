@@ -5,7 +5,7 @@ export default function Contact() {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Texto del Showroom */}
-            <div className="flex flex-col justify-center bg-red-300 p-8 rounded-lg shadow-lg">
+            <div className="flex flex-col justify-center bg-[#121B22] text-white p-8 rounded-lg shadow-lg">
               <h2 className="text-4xl font-bold mb-4">Nuestras muestras</h2>
               <p className="text-lg mb-6">
                Ven a verificar por ti mismo la calidad de nuestros{" "}<br />
@@ -33,7 +33,7 @@ export default function Contact() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Nuestra ubicacion */}
 
-            <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-blue-gray-800">
               <h3 className="text-2xl font-bold text-center mb-4">Visítanos</h3>
               <p className="text-center">
                 La Quincha 179,
@@ -45,7 +45,7 @@ export default function Contact() {
             </div>
             {/* horario */}
 
-            <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-blue-gray-800">
               <h3 className="text-2xl font-bold text-center mb-4">Horarios</h3>
               <p className="text-center">
                 Lunes a viernes de:
@@ -58,7 +58,7 @@ export default function Contact() {
               </p>
             </div>
             {/* Hablemos */}
-            <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-blue-gray-800">
               <h3 className="text-2xl font-bold text-center mb-4">Hablemos</h3>
               <p className="text-center">
                 Móvil:{" "}
