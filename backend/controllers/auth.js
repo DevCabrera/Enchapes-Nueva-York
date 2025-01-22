@@ -26,7 +26,10 @@ const loginUser = async (req, res) => {
 
         const token = jwt.sign({
             email: user.email,
-            id_tipo_usuario: user.id_tipo_usuario
+            id_tipo_usuario: user.id_tipo_usuario,
+            nombre: user.nombre,
+            apellido: user.apellido,
+            celular: user.celular
         }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
         res.cookie("authToken", token, {
@@ -43,6 +46,7 @@ const loginUser = async (req, res) => {
                 email: user.email,
                 nombre: user.nombre,
                 apellido: user.apellido,
+                celular: user.celular,
                 id_tipo_usuario: user.id_tipo_usuario,
                 tipo_usuario: user.tipoUsuario?.nombre || null,
             }
@@ -55,11 +59,26 @@ const loginUser = async (req, res) => {
 };
 
 
-const verifyAuth = (req, res) => {
-    if (req.user) {
-        res.status(200).json({ user: req.user });
-    } else {
-        res.status(401).json({ message: "No autenticado" });
+const verifyAuth = async (req, res) => {
+    try {
+        const user = await Users.findOne({
+            where: { email: req.user.email },
+            attributes: ["email", "nombre", "apellido", "celular", "id_tipo_usuario"],
+            include: {
+                model: TipoUsuario,
+                as: "tipoUsuario",
+                attributes: ["nombre"],
+            },
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+
+        res.status(200).json({ user });
+    } catch (error) {
+        console.error("Error al verificar autenticación:", error.message);
+        res.status(500).json({ message: "Error interno del servidor" });
     }
 };
 

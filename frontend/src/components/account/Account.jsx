@@ -5,12 +5,13 @@ import {
   TabsBody,
   Tab,
   TabPanel,
+  Typography,
 } from "@material-tailwind/react";
 import {
   UserCircleIcon,
   LockClosedIcon,
   MapPinIcon,
-  ShoppingBagIcon
+  ShoppingBagIcon,
 } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../Client/Context/AuthProvider"; // Ajusta la ruta según tu estructura
@@ -20,15 +21,15 @@ import AddressClient from "./AddressClient";
 import OrderClient from "../Orders/OrderClient";
 
 const Account = () => {
-  const { user } = useAuth(); // Obtener el usuario del contexto
+  const { user, loading } = useAuth(); // Obtener el usuario del contexto
   const navigate = useNavigate();
 
   // Redirigir al home si el usuario no está autenticado
   useEffect(() => {
-    if (!user) {
-      navigate("/"); // Redirigir al home
+    if (!loading && !user) {
+      navigate("/"); // Redirigir solo si la verificación ha terminado y no hay usuario.
     }
-  }, [user, navigate]);
+  }, [loading, user, navigate]);
 
   const data = [
     {
@@ -58,7 +59,9 @@ const Account = () => {
   ];
 
   // Mostrar un mensaje de carga o componente vacío mientras verifica el estado de `user`
-  if (!user) return null;
+  if (loading) {
+    return <Typography variant="h5">Cargando...</Typography>;
+  }
 
   return (
     <div className="flex flex-col md:flex-row">
