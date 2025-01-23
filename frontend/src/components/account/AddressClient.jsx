@@ -6,15 +6,21 @@ import {
 } from "../../../Client/Services/userServices";
 import { useAuth } from "../../../Client/Context/AuthProvider";
 import AddressModal from "./AddressModal";
+import { useNavigate } from "react-router-dom";
 
 const AddressClient = () => {
   const { user } = useAuth(); // Obtener el usuario actual
   const [direcciones, setDirecciones] = useState([]);
-  const [selectedDireccion, setSelectedDireccion] = useState(null); // Dirección seleccionada para editar
-  const [isModalOpen, setIsModalOpen] = useState(false); // Control del modal
+  const [selectedDireccion, setSelectedDireccion] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
-  // Traer las direcciones al cargar el componente
   useEffect(() => {
+    if (!user) {
+      navigate("/login"); // Redirigir al login
+      return;
+    }
+
     const fetchDirecciones = async () => {
       try {
         const data = await getDirecciones(user.email); // Llamada al backend
@@ -24,21 +30,18 @@ const AddressClient = () => {
       }
     };
     fetchDirecciones();
-  }, [user.email]);
+  }, [user, navigate]);
 
-  // Abrir el modal para agregar o editar dirección
   const openModal = (direccion = null) => {
     setSelectedDireccion(direccion);
     setIsModalOpen(true);
   };
 
-  // Cerrar el modal
   const closeModal = () => {
     setSelectedDireccion(null);
     setIsModalOpen(false);
   };
 
-  // Eliminar una dirección
   const handleDelete = async (id) => {
     const confirm = window.confirm("¿Estás seguro de eliminar esta dirección?");
     if (!confirm) return;
@@ -51,7 +54,6 @@ const AddressClient = () => {
     }
   };
 
-  // Establecer como favorita
   const handleFavorite = async (id) => {
     try {
       await updateDireccion(id, { favorita: true });
@@ -65,6 +67,10 @@ const AddressClient = () => {
       console.error("Error al marcar dirección como favorita:", error);
     }
   };
+
+  if (!user) {
+    return <p>Redirigiendo...</p>; // Opcional: mostrar algo mientras redirige
+  }
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">

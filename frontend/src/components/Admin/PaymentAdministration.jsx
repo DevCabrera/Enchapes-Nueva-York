@@ -13,14 +13,14 @@ const PaymentAdministration = () => {
   const navigate = useNavigate();
   const [payments, setPayments] = useState([]);
   const [loadingPayments, setLoadingPayments] = useState(true);
-  const [filterEmail, setFilterEmail] = useState(""); // Filtro por correo
-  const [filterState, setFilterState] = useState("todos"); // Filtro por estado
-  const [modalImage, setModalImage] = useState(null); // Imagen ampliada
+  const [filterEmail, setFilterEmail] = useState("");
+  const [filterState, setFilterState] = useState("todos");
+  const [modalImage, setModalImage] = useState(null);
 
-  // Redirige a usuarios no autorizados
+  // Redirigir si no es admin
   useEffect(() => {
     if (!loading && (!user || user.id_tipo_usuario !== 1)) {
-      navigate("/"); // Redirigir si no es administrador
+      navigate("/");
     } else if (user?.id_tipo_usuario === 1) {
       const fetchPayments = async () => {
         try {
@@ -36,14 +36,11 @@ const PaymentAdministration = () => {
     }
   }, [user, loading, navigate]);
 
-  // Actualizar el estado del pago
   const handleStateChange = async (idPago, newState) => {
     try {
-      if (newState === "verificado") {
-        await verifyPayment(idPago);
-      } else if (newState === "rechazado") {
-        await rejectPayment(idPago);
-      }
+      if (newState === "verificado") await verifyPayment(idPago);
+      else if (newState === "rechazado") await rejectPayment(idPago);
+
       setPayments((prev) =>
         prev.map((payment) =>
           payment.id_pago === idPago
@@ -56,20 +53,18 @@ const PaymentAdministration = () => {
     }
   };
 
-  // Filtrar pagos por correo y estado
   const filteredPayments = payments.filter((payment) => {
     const matchesEmail = payment.carro?.email
-      .toLowerCase()
+      ?.toLowerCase()
       .includes(filterEmail.toLowerCase());
+
     const matchesState =
       filterState === "todos" || payment.estado === filterState;
     return matchesEmail && matchesState;
   });
 
-  // Manejo de carga
-  if (loading || loadingPayments) {
+  if (loading || loadingPayments)
     return <Typography variant="h5">Cargando...</Typography>;
-  }
 
   return (
     <div className="p-6">
@@ -77,16 +72,13 @@ const PaymentAdministration = () => {
         Administración de Pagos
       </Typography>
       {/* Filtros */}
-      <Typography variant="h4" className="mb-4">
-        Buscar por Correo:
-      </Typography>
       <div className="flex flex-wrap gap-4 mb-4">
         <Input
           type="text"
           placeholder="Buscar por correo electrónico"
           value={filterEmail}
           onChange={(e) => setFilterEmail(e.target.value)}
-          className="w-64 text-black truncate max-w-md"
+          className="w-64"
         />
         <Select
           value={filterState}
@@ -99,7 +91,7 @@ const PaymentAdministration = () => {
           <Option value="rechazado">Rechazado</Option>
         </Select>
       </div>
-      {/* Tabla de Pagos */}
+      {/* Tabla */}
       {filteredPayments.length === 0 ? (
         <Typography variant="h5">No hay pagos que coincidan.</Typography>
       ) : (
@@ -117,14 +109,14 @@ const PaymentAdministration = () => {
             <tbody>
               {filteredPayments.map((payment) => (
                 <tr key={payment.id_pago}>
-                  <td className="border px-4 py-2">
-                    {payment.carro?.email || "Sin correo"}
-                  </td>
+                  <td className="border px-4 py-2">{payment.carro?.email}</td>
                   <td className="border px-4 py-2">{payment.estado}</td>
                   <td className="border px-4 py-2">
                     <ul>
-                      {payment.carro?.productos.map((prod) => (
-                        <li key={prod.id_producto}>{prod.producto.nombre}</li>
+                      {payment.detalles.map((detalle) => (
+                        <li key={detalle.id_producto}>
+                          {detalle.producto.nombre} - {detalle.cantidad}
+                        </li>
                       ))}
                     </ul>
                   </td>
@@ -155,7 +147,7 @@ const PaymentAdministration = () => {
           </table>
         </div>
       )}
-      {/* Modal para Imagen Ampliada */}
+      {/* Modal de Imagen */}
       {modalImage && (
         <div
           className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"

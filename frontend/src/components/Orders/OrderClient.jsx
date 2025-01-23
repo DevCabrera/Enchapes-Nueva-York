@@ -14,8 +14,9 @@ const OrderClient = () => {
         try {
           const data = await getPayments();
           const userOrders = data.filter(
-            (order) => order.carro?.email === user.email
+            (order) => order.carro.email === user.email
           );
+
           setOrders(userOrders);
         } catch (error) {
           console.error("Error al obtener los pedidos:", error);
@@ -53,10 +54,13 @@ const OrderClient = () => {
             {orders.map((order) => (
               <tr key={order.id_pago}>
                 <td className="border px-4 py-2">{order.estado}</td>
+
                 <td className="border px-4 py-2">
                   <ul>
-                    {order.carro?.productos.map((prod) => (
-                      <li key={prod.id_producto}>{prod.producto.nombre}</li>
+                    {order.detalles.map((detalle) => (
+                      <li key={detalle.id_producto}>
+                        {detalle.producto.nombre} - {detalle.cantidad}
+                      </li>
                     ))}
                   </ul>
                 </td>

@@ -33,16 +33,19 @@ import CartDetails from "./components/Cart/CartDetails";
 import UploadPayment from "./components/Cart/Payment";
 import OrderClient from "./components/Orders/OrderClient";
 import PaymentAdministration from "./components/Admin/PaymentAdministration";
+import ErrorGlobals from "../Client/ErrorHandler/errorGlobals";
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
-          <MainContent />
-        </Router>
-      </CartProvider>
-    </AuthProvider>
+    <ErrorGlobals>
+      <AuthProvider>
+        <CartProvider>
+          <Router>
+            <MainContent />
+          </Router>
+        </CartProvider>
+      </AuthProvider>
+    </ErrorGlobals>
   );
 }
 

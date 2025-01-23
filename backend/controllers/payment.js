@@ -2,13 +2,20 @@ const Pago = require("../models/MySql/payment");
 const Carro = require("../models/MySql/cart");
 const CarroProd = require("../models/MySql/carro_prod");
 const Producto = require("../models/MySql/product");
+const OrderDetails = require("../models/MySql/orders");
 
 // Subir comprobante de pago
 const uploadPayment = async (req, res) => {
     try {
         const { id_carro } = req.body;
 
-        const carrito = await Carro.findByPk(id_carro);
+        const carrito = await Carro.findByPk(id_carro, {
+            include: {
+                model: CarroProd,
+                as: "productos",
+            },
+        });
+
         if (!carrito) {
             return res.status(404).json({ message: "Carrito no encontrado" });
         }
@@ -20,14 +27,21 @@ const uploadPayment = async (req, res) => {
             comprobante: comprobanteUrl,
         });
 
-        // vaciaremos el carrito, paara mantener el id_carro y poder llamar a carro_prod, donde tengo almacenados los productos de ese carro, 
-        await CarroProd.update(
-            { cantidad: 0, subtotal: 0 },
-            { where: { id_carro } }
-        );
+        // Copiar productos del carrito a OrderDetails
+        const detalles = carrito.productos.map((prod) => ({
+            id_pago: nuevoPago.id_pago,
+            id_producto: prod.id_producto,
+            cantidad: prod.cantidad,
+            subtotal: prod.subtotal,
+        }));
+
+        await OrderDetails.bulkCreate(detalles);
+
+        // Vaciar el carrito
+        await CarroProd.destroy({ where: { id_carro } });
 
         res.status(200).json({
-            message: "Comprobante subido y carrito vaciado correctamente",
+            message: "Comprobante subido y detalles del pedido registrados correctamente.",
             pago: nuevoPago,
         });
     } catch (error) {
@@ -87,23 +101,21 @@ const getPayments = async (req, res) => {
         const pagos = await Pago.findAll({
             include: [
                 {
+                    model: OrderDetails,
+                    as: "detalles",
+                    include: {
+                        model: Producto,
+                        as: "producto",
+                        attributes: ["nombre"],
+                    },
+                },
+                {
                     model: Carro,
                     as: "carro",
-                    include: [
-                        {
-                            model: CarroProd,
-                            as: "productos",
-                            include: {
-                                model: Producto,
-                                as: "producto",
-                                attributes: ["nombre"], // Solo el nombre del producto
-                            },
-                        },
-                    ],
-                    attributes: ["email", "id_carro"],
+                    attributes: ["email"], // Asegúrate de incluir el campo "email"
                 },
             ],
-            order: [["createdAt", "DESC"]], // Ordenar por fecha de creación, reciente primero
+            order: [["createdAt", "DESC"]],
         });
         res.status(200).json(pagos);
     } catch (error) {
@@ -111,6 +123,8 @@ const getPayments = async (req, res) => {
         res.status(500).json({ message: "Error al obtener los pagos" });
     }
 };
+
+
 
 
 module.exports = {
