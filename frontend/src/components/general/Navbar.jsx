@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Navbar,
-  MobileNav,
+  Collapse,
   Typography,
   Button,
   IconButton,
@@ -181,7 +181,7 @@ export default function Navbart({ setOpenModal }) {
           </IconButton>
         </div>
       </div>
-      <MobileNav open={openNav}>{navList}</MobileNav>
+      <Collapse open={openNav}>{navList}</Collapse>
     </Navbar>
   );
 }

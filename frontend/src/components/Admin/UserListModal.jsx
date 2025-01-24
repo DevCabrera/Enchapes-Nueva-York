@@ -23,10 +23,29 @@ const UserListModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  const handleOutsideClick = (e) => {
+    if (e.target.className.includes("modal-overlay")) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full modal-container">
-        <h2 className="text-xl font-bold mb-4">Lista de Usuarios</h2>
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center modal-overlay"
+      onClick={handleOutsideClick}
+    >
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full h-3/4 overflow-auto relative">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Lista de Usuarios</h2>
+          <Button
+            size="sm"
+            color="red"
+            onClick={onClose}
+            className="absolute top-2 right-2"
+          >
+            &times;
+          </Button>
+        </div>
         <table className="min-w-full bg-white border-collapse">
           <thead>
             <tr>
@@ -53,11 +72,6 @@ const UserListModal = ({ isOpen, onClose }) => {
             ))}
           </tbody>
         </table>
-        <div className="flex justify-end mt-4">
-          <Button size="sm" color="red" onClick={onClose}>
-            Cerrar
-          </Button>
-        </div>
       </div>
     </div>
   );

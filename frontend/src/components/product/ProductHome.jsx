@@ -2,9 +2,6 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const ProductCard = ({ product }) => {
-  if (!product) {
-    return <div>Producto no disponible.</div>;
-  }
 
   return (
     <div className="bg-blue-gray-50 p-4 rounded-lg shadow-lg border-2 border-blue-gray-500">

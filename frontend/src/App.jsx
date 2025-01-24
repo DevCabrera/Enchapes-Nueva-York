@@ -75,7 +75,15 @@ function MainContent() {
             </>
           }
         />
-        <Route path="/products" element={<AllProducts />} />
+        <Route
+          path="/products"
+          element={
+            <>
+              <Carouselw />
+              <AllProducts />
+            </>
+          }
+        />
         <Route path="/products/:sku" element={<Product />} />
         <Route path="/cart" element={<CartDetails />} />
         <Route path="/login" element={<GoogleSign />} />

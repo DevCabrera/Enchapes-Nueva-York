@@ -7,6 +7,7 @@ import {
 } from "../../../Client/Services/paymentServices";
 import { Typography, Select, Option, Input } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 const PaymentAdministration = () => {
   const { user, loading } = useAuth();
@@ -17,7 +18,6 @@ const PaymentAdministration = () => {
   const [filterState, setFilterState] = useState("todos");
   const [modalImage, setModalImage] = useState(null);
 
-  // Redirigir si no es admin
   useEffect(() => {
     if (!loading && (!user || user.id_tipo_usuario !== 1)) {
       navigate("/");
@@ -53,6 +53,25 @@ const PaymentAdministration = () => {
     }
   };
 
+  const getSelectClass = (estado) => {
+    switch (estado) {
+      case "pendiente":
+        return { className: "bg-blue-gray-400", icon: null };
+      case "verificado":
+        return {
+          className: "bg-green-200",
+          icon: <CheckIcon className="w-5 h-5 inline mr-2" />,
+        };
+      case "rechazado":
+        return {
+          className: "bg-red-200",
+          icon: <XMarkIcon className="w-5 h-5 inline mr-2" />,
+        };
+      default:
+        return { className: "", icon: null };
+    }
+  };
+
   const filteredPayments = payments.filter((payment) => {
     const matchesEmail = payment.carro?.email
       ?.toLowerCase()
@@ -71,14 +90,13 @@ const PaymentAdministration = () => {
       <Typography variant="h4" className="mb-4">
         Administración de Pagos
       </Typography>
-      {/* Filtros */}
       <div className="flex flex-wrap gap-4 mb-4">
         <Input
           type="text"
           placeholder="Buscar por correo electrónico"
           value={filterEmail}
           onChange={(e) => setFilterEmail(e.target.value)}
-          className="w-64"
+          className="w-32 font-black"
         />
         <Select
           value={filterState}
@@ -91,63 +109,74 @@ const PaymentAdministration = () => {
           <Option value="rechazado">Rechazado</Option>
         </Select>
       </div>
-      {/* Tabla */}
       {filteredPayments.length === 0 ? (
         <Typography variant="h5">No hay pagos que coincidan.</Typography>
       ) : (
         <div className="overflow-auto">
           <table className="table-auto border-collapse w-full text-left">
             <thead>
-              <tr>
-                <th className="border px-4 py-2">Correo</th>
-                <th className="border px-4 py-2">Estado Actual</th>
-                <th className="border px-4 py-2">Productos</th>
-                <th className="border px-4 py-2">Comprobante</th>
-                <th className="border px-4 py-2">Acciones</th>
+              <tr className="border-black">
+                <th className="border border-black px-4 py-2">Correo</th>
+                <th className="border border-black px-4 py-2">Estado Actual</th>
+                <th className="border border-black px-4 py-2">Productos</th>
+                <th className="border border-black px-4 py-2">Comprobante</th>
+                <th className="border border-black px-4 py-2">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {filteredPayments.map((payment) => (
-                <tr key={payment.id_pago}>
-                  <td className="border px-4 py-2">{payment.carro?.email}</td>
-                  <td className="border px-4 py-2">{payment.estado}</td>
-                  <td className="border px-4 py-2">
-                    <ul>
-                      {payment.detalles.map((detalle) => (
-                        <li key={detalle.id_producto}>
-                          {detalle.producto.nombre} - {detalle.cantidad}
-                        </li>
-                      ))}
-                    </ul>
-                  </td>
-                  <td className="border px-4 py-2">
-                    <img
-                      src={payment.comprobante}
-                      alt="Comprobante"
-                      className="w-16 h-16 object-cover cursor-pointer"
-                      onClick={() => setModalImage(payment.comprobante)}
-                    />
-                  </td>
-                  <td className="border px-4 py-2">
-                    <Select
-                      value={payment.estado}
-                      onChange={(newState) =>
-                        handleStateChange(payment.id_pago, newState)
-                      }
-                      className="w-full"
-                    >
-                      <Option value="pendiente">Pendiente</Option>
-                      <Option value="verificado">Verificado</Option>
-                      <Option value="rechazado">Rechazado</Option>
-                    </Select>
-                  </td>
-                </tr>
-              ))}
+              {filteredPayments.map((payment) => {
+                const { className, icon } = getSelectClass(payment.estado);
+                return (
+                  <tr key={payment.id_pago} className="border-black">
+                    <td className="border border-black px-4 py-2">
+                      {payment.carro?.email}
+                    </td>
+                    <td className="border border-black px-4 py-2">
+                      {payment.estado}
+                    </td>
+                    <td className="border border-black px-4 py-2">
+                      <ul>
+                        {payment.detalles.map((detalle) => (
+                          <li key={detalle.id_producto}>
+                            {detalle.producto.nombre} - {detalle.cantidad}
+                          </li>
+                        ))}
+                      </ul>
+                    </td>
+                    <td className="border border-black px-4 py-2">
+                      <img
+                        src={payment.comprobante}
+                        alt="Comprobante"
+                        className="w-16 h-16 object-cover cursor-pointer"
+                        onClick={() => setModalImage(payment.comprobante)}
+                      />
+                    </td>
+                    <td className="border border-black px-4 py-2">
+                      <Select
+                        value={payment.estado}
+                        onChange={(newState) =>
+                          handleStateChange(payment.id_pago, newState)
+                        }
+                        className={`w-full gap-2 ${className}`}
+                      >
+                        <Option value="pendiente">Pendiente</Option>
+                        <Option value="verificado" className="bg-green-100">
+                          {icon}
+                          Verificado
+                        </Option>
+                        <Option value="rechazado">
+                          {icon}
+                          Rechazado
+                        </Option>
+                      </Select>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       )}
-      {/* Modal de Imagen */}
       {modalImage && (
         <div
           className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"

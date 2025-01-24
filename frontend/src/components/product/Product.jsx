@@ -43,9 +43,15 @@ const Product = () => {
 
   return (
     <div className="flex justify-center mt-10 space-x-8">
-      <div className="h-[400px] w-[600px] mt-10 ml-[10px]">
+      <div className="h-[400px] w-[450px] mt-10 ml-[10px]">
         <img
-          className="rounded-lg object-scale-down object-left shadow-xl shadow-blue-gray-900/50"
+          className="
+          rounded-lg 
+          object-scale-down 
+          object-left 
+          shadow-xl
+        shadow-blue-gray-900/50 
+          transition-transform duration-300 ease-in-out transform hover:scale-105"
           src={product.foto}
           alt={product.nombre}
         />
@@ -58,13 +64,13 @@ const Product = () => {
           {product.nombre}
         </Typography>
         <Typography variant="h4" className="text-gray-700 mb-1">
-          {formatPriceCLP(product.precio_m2)}
+          {formatPriceCLP(product.precio_m2)} CLP
         </Typography>
         <Typography className="text-sm text-gray-500 mb-4">
-          Impuesto incluido
+          IVA incluido
         </Typography>
         <div className="mb-4">
-          <label htmlFor="quantity" className="text-sm text-gray-500">
+          <label htmlFor="quantity" className="text-sm text-black font-bold">
             Cantidad en m²
           </label>
           <input
@@ -76,9 +82,8 @@ const Product = () => {
           />
         </div>
         <Button
-          color="red"
           size="lg"
-          className="w-full mb-6"
+          className="w-full mb-6 bg-[#2c4255] hover:bg-[#3c5d7a]"
           onClick={handleAddToCart}
         >
           Agregar Compra
@@ -91,7 +96,9 @@ const Product = () => {
           <li>Alto: {product.alto} cm</li>
           <li>Espesor: {product.espesor} cm</li>
           <li>Peso m²: {product.peso_m2} kg</li>
-          <li>Valor por Metro Cuadrado: {formatPriceCLP(product.precio_m2)}</li>
+          <li>
+            Valor por Metro Cuadrado: {formatPriceCLP(product.precio_m2)} CLP
+          </li>
           <li>Rendimiento considera Cantería de 1 cm aprox.</li>
         </ul>
         <div className="flex space-x-4 mt-6 justify-center text-xl text-gray-600">
