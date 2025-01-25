@@ -6,10 +6,15 @@ const ProductCard = ({ product }) => {
     return <div>Producto no disponible.</div>;
   }
 
+  const firstImage =
+    product.imagenes && product.imagenes.length > 0
+      ? product.imagenes[0].url
+      : "default-image-url"; // URL de una imagen predeterminada si no hay imágenes
+
   return (
     <div className="bg-blue-gray-50 p-4 rounded-lg shadow-lg border-2 border-blue-gray-500">
       <img
-        src={product.foto}
+        src={firstImage}
         alt={product.nombre}
         className="w-full h-64 object-cover rounded-md transition-transform duration-300 ease-in-out transform hover:scale-105"
       />
@@ -33,7 +38,11 @@ ProductCard.propTypes = {
     nombre: PropTypes.string.isRequired,
     sku: PropTypes.string.isRequired,
     precio_m2: PropTypes.number.isRequired,
-    foto: PropTypes.string.isRequired,
+    imagenes: PropTypes.arrayOf(
+      PropTypes.shape({
+        url: PropTypes.string.isRequired,
+      })
+    ).isRequired,
   }).isRequired,
 };
 

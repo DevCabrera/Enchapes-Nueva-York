@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Typography, Button } from "@material-tailwind/react";
 import { useCart } from "../../../Client/Context/cartContext";
-import { useAuth } from "../../../Client/Context/AuthProvider"; // Asegúrate de importar
+import { useAuth } from "../../../Client/Context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 const CartDetails = () => {
@@ -26,8 +26,9 @@ const CartDetails = () => {
   }, [cart]);
 
   if (loading) {
-    return <p>Cargando...</p>; // Mostrar un mensaje de carga mientras se verifica la autenticación
+    return <p>Cargando...</p>;
   }
+ 
 
   return (
     <div className="p-6">
@@ -42,11 +43,11 @@ const CartDetails = () => {
         <div>
           {cart.map((item) => (
             <div
-              key={item.id_producto}
+              key={item.producto.id_producto}
               className="flex justify-between items-center border-b py-4"
             >
               <img
-                src={item.producto.foto}
+                src={item.producto.imagenes?.[0]?.url}
                 alt={item.producto.nombre}
                 className="w-16 h-16 object-cover"
               />
@@ -61,7 +62,10 @@ const CartDetails = () => {
                   type="number"
                   value={item.cantidad}
                   onChange={(e) =>
-                    updateQuantity(item.id_producto, Number(e.target.value))
+                    updateQuantity(
+                      item.producto.id_producto,
+                      Number(e.target.value)
+                    )
                   }
                   className="w-16 border rounded text-center"
                 />
@@ -70,7 +74,7 @@ const CartDetails = () => {
                 size="sm"
                 color="red"
                 variant="outlined"
-                onClick={() => removeFromCart(item.id_producto)}
+                onClick={() => removeFromCart(item.producto.id_producto)}
               >
                 Eliminar
               </Button>
@@ -91,10 +95,6 @@ const CartDetails = () => {
                     console.error("ID del carrito no disponible.");
                     return;
                   }
-                  console.log(
-                    "Navegando a /payment con ID del carrito:",
-                    idCarro
-                  );
                   navigate("/payment", { state: { idCarro } });
                 }}
               >

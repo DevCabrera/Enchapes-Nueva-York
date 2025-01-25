@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 import { getProduct } from "../../../Client/Services/productServices";
 import { addToCart } from "../../../Client/Services/cartServices";
-import { Button, Typography } from "@material-tailwind/react";
+import { Button, Typography, Carousel } from "@material-tailwind/react";
 
 const Product = () => {
   const formatPriceCLP = (price) => {
@@ -33,6 +34,13 @@ const Product = () => {
   const handleAddToCart = async () => {
     try {
       await addToCart(product, quantity);
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Producto agregado al carrito",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       console.log(
         `Producto agregado al carrito: ${product.nombre}, Cantidad: ${quantity}`
       );
@@ -43,18 +51,35 @@ const Product = () => {
 
   return (
     <div className="flex justify-center mt-10 space-x-8">
-      <div className="h-[400px] w-[450px] mt-10 ml-[10px]">
-        <img
-          className="
-          rounded-lg 
-          object-scale-down 
-          object-left 
-          shadow-xl
-        shadow-blue-gray-900/50 
-          transition-transform duration-300 ease-in-out transform hover:scale-105"
-          src={product.foto}
-          alt={product.nombre}
-        />
+      <div className="w-[400px] h-[500px] mt-10">
+        {/* Galería de imágenes */}
+        <div className="relative">
+          <Carousel
+            className="rounded-xl"
+            navigation={({ setActiveIndex, activeIndex, length }) => (
+              <div className="absolute bottom-4 left-2/4 z-50 flex -translate-x-2/4 gap-2">
+                {new Array(length).fill("").map((_, i) => (
+                  <span
+                    key={i}
+                    className={`block h-1 cursor-pointer rounded-2xl transition-all content-[''] ${
+                      activeIndex === i ? "w-8 bg-white" : "w-4 bg-white/50"
+                    }`}
+                    onClick={() => setActiveIndex(i)}
+                  />
+                ))}
+              </div>
+            )}
+          >
+            {product.imagenes.map((image, index) => (
+              <img
+                key={index}
+                src={image.url}
+                alt={`Producto ${index + 1}`}
+                className="w-[400px] h-[500px] object-cover"
+              />
+            ))}
+          </Carousel>
+        </div>
       </div>
       <div className="max-w-md p-6 bg-white rounded-lg shadow-lg">
         <Typography className="text-sm text-gray-500 mb-1">
@@ -77,7 +102,12 @@ const Product = () => {
             id="quantity"
             type="number"
             value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              if (value >= 1) {
+                setQuantity(value);
+              }
+            }}
             className="w-16 p-2 mt-1 text-center border border-gray-300 rounded-md"
           />
         </div>

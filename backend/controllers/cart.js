@@ -1,5 +1,6 @@
 const { findOrCreateCart, updateCartTotal } = require("../helpers/cartHelpers");
 const CarroProd = require("../models/MySql/carro_prod");
+const ImgPro = require("../models/MySql/img_pro");
 const Producto = require("../models/MySql/product");
 
 // Obtener el carrito del usuario autenticado
@@ -8,15 +9,22 @@ const getCart = async (req, res) => {
         const email = req.user.email;
         const carrito = await findOrCreateCart(email);
 
+        // Recargar el carrito con los productos e imágenes asociadas
         await carrito.reload({
             include: [
                 {
                     model: CarroProd,
-                    as: "productos", // Debe coincidir con el alias en Carrito.hasMany
+                    as: "productos",
                     include: [
                         {
                             model: Producto,
-                            as: "producto", // Debe coincidir con el alias en CarroProd.belongsTo
+                            as: "producto",
+                            include: [
+                                {
+                                    model: ImgPro,
+                                    as: "imagenes", // Asegúrate de que el alias coincida con las asociaciones
+                                },
+                            ],
                         },
                     ],
                 },
@@ -25,7 +33,7 @@ const getCart = async (req, res) => {
 
         res.status(200).json(carrito);
     } catch (error) {
-        console.error("Error al obtener el carrito xd:", error.message);
+        console.error("Error al obtener el carrito:", error.message);
         res.status(500).json({ message: "Error al obtener el carrito" });
     }
 };
@@ -73,7 +81,6 @@ const addToCart = async (req, res) => {
         res.status(500).json({ message: "Error al agregar producto al carrito" });
     }
 };
-
 // Actualizar la cantidad de un producto en el carrito
 const updateCart = async (req, res) => {
     try {

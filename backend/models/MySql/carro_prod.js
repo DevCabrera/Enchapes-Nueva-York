@@ -1,6 +1,3 @@
-const Carrito = require("./cart");
-const Producto = require("./product");
-
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../../config/mysql");
 

@@ -57,7 +57,11 @@ const AdminProductList = () => {
       {products.map((product) => (
         <div key={product.id_producto} className="p-4 border rounded shadow-lg">
           <img
-            src={product.foto}
+            src={
+              product.imagenes && product.imagenes.length > 0
+                ? product.imagenes[0].url
+                : "default-image-url" // URL de una imagen predeterminada si no hay imágenes
+            }
             alt={product.nombre}
             className="w-full h-32 object-cover rounded mb-2"
           />

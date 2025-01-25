@@ -1,28 +1,25 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../../config/mysql");
 
-const Carrito = sequelize.define(
-    "carro",
+const ImgPro = sequelize.define(
+    "img_pro",
     {
-        id_carro: {
+        id_imgpro: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        total: {
-            type: DataTypes.DECIMAL(10, 2),
+        id_producto: {
+            type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: 0.0,
         },
-        estatus: {
-            type: DataTypes.ENUM("pagado", "no_pagado"),
-            allowNull: false,
-            defaultValue: "no_pagado",
-        },
-        email: {
+        url: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true,
+        },
+        public_id: {
+            type: DataTypes.STRING,
+            allowNull: false,
         },
     },
     {
@@ -31,6 +28,4 @@ const Carrito = sequelize.define(
     }
 );
 
-
-
-module.exports = Carrito;
+module.exports = ImgPro;

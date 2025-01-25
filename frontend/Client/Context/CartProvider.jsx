@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import CartContext from "../Context/cartContext";
 import { useAuth } from "../Context/AuthProvider";
@@ -15,33 +15,51 @@ const CartProvider = ({ children }) => {
   const [idCarro, setIdCarro] = useState(null); // Manejo del ID del carrito
   const { user } = useAuth();
 
-  useEffect(() => {
-    const fetchCart = async () => {
-      if (user) {
-        try {
-          const data = await getCart();
-          setCart(data.productos || []);
-          setIdCarro(data.id_carro); // Guardar el ID del carrito
-        } catch (error) {
-          console.error("Error al obtener el carrito:", error);
-        }
-      } else {
-        setCart([]);
-        setIdCarro(null); // Reinicia el ID del carrito si no hay usuario
+  // Memoriza la función `fetchCart`
+  const fetchCart = useCallback(async () => {
+    if (user) {
+      try {
+        const data = await getCart();
+        setCart(
+          data.productos.map((producto) => ({
+            ...producto,
+            primeraImagen:
+              producto.imagenes && producto.imagenes.length > 0
+                ? producto.imagenes[0].url
+                : "default-image-url", // Establece una URL de imagen predeterminada si no hay imágenes
+          }))
+        );
+        setIdCarro(data.id_carro); // Guarda el ID del carrito
+      } catch (error) {
+        console.error("Error al obtener el carrito:", error);
       }
-    };
-    fetchCart();
+    } else {
+      setCart([]);
+      setIdCarro(null); // Reinicia el ID del carrito si no hay usuario
+    }
   }, [user]);
 
-  const syncCart = async () => {
+  useEffect(() => {
+    fetchCart(); // Llama a la función memorizada cuando cambie `user`
+  }, [fetchCart]);
+
+  const syncCart = useCallback(async () => {
     try {
       const data = await getCart();
-      setCart(data.productos || []);
+      setCart(
+        data.productos.map((producto) => ({
+          ...producto,
+          primeraImagen:
+            producto.imagenes && producto.imagenes.length > 0
+              ? producto.imagenes[0].url
+              : "default-image-url",
+        }))
+      );
       setIdCarro(data.id_carro);
     } catch (error) {
       console.error("Error al sincronizar el carrito:", error.message);
     }
-  };
+  }, []);
 
   const addProduct = async (product, quantity) => {
     try {
