@@ -15,7 +15,7 @@ const AdminProductForm = ({ isOpen, onClose, product, onSave }) => {
     espesor: "",
     peso_m2: "",
     precio_m2: "",
-    fotos: [], // Cambiado de 'foto' a 'fotos' para admitir múltiples imágenes
+    fotos: [], //ARRAY DE FOTOS
     ...product,
   });
 
@@ -24,7 +24,7 @@ const AdminProductForm = ({ isOpen, onClose, product, onSave }) => {
       setFormData((prevFormData) => ({
         ...prevFormData,
         ...product,
-        fotos: product.fotos || [], // Asegurar que 'fotos' siempre sea un array
+        fotos: product.fotos || [], //ESPERAR AL CAMBIO DE LAS FOTOS Y ALMACENARLAS
       }));
     }
   }, [product]);

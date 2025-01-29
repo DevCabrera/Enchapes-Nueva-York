@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import formatPriceCLP from "../../../Client/helpers/helperMoney";
 
 const ProductCard = ({ product }) => {
   if (!product) {
@@ -19,7 +20,9 @@ const ProductCard = ({ product }) => {
         className="w-full h-64 object-cover rounded-md transition-transform duration-300 ease-in-out transform hover:scale-105"
       />
       <h3 className="mt-4 text-lg font-semibold">{product.nombre}</h3>
-      <p className="mt-2 text-gray-900 font-bold">${product.precio_m2} CLP</p>
+      <p className="mt-2 text-gray-900 font-bold">
+        {formatPriceCLP(product.precio_m2)} CLP
+      </p>
       <p className="text-blue-gray-700 text-sm mt-1">Impuesto incluido</p>
       <div className="flex justify-center mt-4">
         <Link to={`/products/${product.sku}`}>

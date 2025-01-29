@@ -90,7 +90,7 @@ const PaymentAdministration = () => {
       <Typography variant="h4" className="mb-4">
         Administración de Pagos
       </Typography>
-      <div className="flex flex-wrap gap-4 mb-4 max-w-full">
+      <div className="flex flex-wrap gap-4 mb-4 max-w-full relative z-10">
         <div>
           <Input
             type="text"
@@ -100,7 +100,7 @@ const PaymentAdministration = () => {
             className="min-w-[250px] placeholder-black text-black"
           />
         </div>
-        <div className="">
+        <div className="relative z-20">
           <Select
             value={filterState}
             onChange={(value) => setFilterState(value)}
@@ -124,7 +124,7 @@ const PaymentAdministration = () => {
                 <th className="border border-black px-4 py-2">Estado Actual</th>
                 <th className="border border-black px-4 py-2">Productos</th>
                 <th className="border border-black px-4 py-2">Dirección</th>
-                <th className="border border-black px-4 py-2">Total</th>{" "}
+                <th className="border border-black px-4 py-2">Total</th>
                 <th className="border border-black px-4 py-2">Comprobante</th>
                 <th className="border border-black px-4 py-2">Acciones</th>
               </tr>
@@ -164,19 +164,21 @@ const PaymentAdministration = () => {
                       />
                     </td>
                     <td className="border border-black px-4 py-2">
-                      <Select
-                        value={payment.estado}
-                        onChange={(newState) =>
-                          handleStateChange(payment.id_pago, newState)
-                        }
-                        className={`w-full gap-2 ${className}`}
-                      >
-                        <Option value="pendiente">Pendiente</Option>
-                        <Option value="verificado" className="bg-green-100">
-                          {icon} Verificado
-                        </Option>
-                        <Option value="rechazado">{icon} Rechazado</Option>
-                      </Select>
+                      <div className="relative">
+                        <Select
+                          value={payment.estado}
+                          onChange={(newState) =>
+                            handleStateChange(payment.id_pago, newState)
+                          }
+                          className={`w-full gap-2 ${className} z-30`}
+                        >
+                          <Option value="pendiente">Pendiente</Option>
+                          <Option value="verificado" className="bg-green-100">
+                            {icon} Verificado
+                          </Option>
+                          <Option value="rechazado" className="bg-red-100">{icon} Rechazado</Option>
+                        </Select>
+                      </div>
                     </td>
                   </tr>
                 );

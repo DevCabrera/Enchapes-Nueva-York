@@ -4,15 +4,8 @@ import Swal from "sweetalert2";
 import { getProduct } from "../../../Client/Services/productServices";
 import { addToCart } from "../../../Client/Services/cartServices";
 import { Button, Typography, Carousel } from "@material-tailwind/react";
-
+import formatPriceCLP from "../../../Client/helpers/helperMoney";
 const Product = () => {
-  const formatPriceCLP = (price) => {
-    return new Intl.NumberFormat("es-CL", {
-      style: "currency",
-      currency: "CLP",
-    }).format(price);
-  };
-
   const { sku } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
