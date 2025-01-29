@@ -115,24 +115,30 @@ const getPayments = async (req, res) => {
                     include: {
                         model: Producto,
                         as: "producto",
-                        attributes: ["nombre"],
+                        attributes: ["nombre", "precio_m2"],
                     },
                 },
                 {
                     model: Carro,
                     as: "carro",
-                    attributes: ["email"], // Correo electrónico del usuario
+                    attributes: ["email"],
                 },
                 {
                     model: Direccion,
-                    as: "direccion", // Relación con el modelo Direccion
-                    attributes: ["direccion"], 
+                    as: "direccion",
+                    attributes: ["direccion"],
                 },
             ],
             order: [["createdAt", "DESC"]],
         });
 
-        res.status(200).json(pagos);
+        // Calcular el total por pago sumando los subtotales de los productos
+        const pagosConTotal = pagos.map((pago) => {
+            const total = pago.detalles.reduce((acc, detalle) => acc + detalle.subtotal, 0);
+            return { ...pago.toJSON(), total };
+        });
+
+        res.status(200).json(pagosConTotal);
     } catch (error) {
         console.error("Error al obtener los pagos:", error.message);
         res.status(500).json({ message: "Error al obtener los pagos" });

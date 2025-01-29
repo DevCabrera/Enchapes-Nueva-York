@@ -8,7 +8,7 @@ import {
 import { Typography, Select, Option, Input } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
-
+import formatPriceCLP from "../../../Client/helpers/helperMoney";
 const PaymentAdministration = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -123,10 +123,8 @@ const PaymentAdministration = () => {
                 <th className="border border-black px-4 py-2">Correo</th>
                 <th className="border border-black px-4 py-2">Estado Actual</th>
                 <th className="border border-black px-4 py-2">Productos</th>
-                <th className="border border-black px-4 py-2">
-                  Dirección
-                </th>{" "}
-                {/* Nueva columna */}
+                <th className="border border-black px-4 py-2">Dirección</th>
+                <th className="border border-black px-4 py-2">Total</th>{" "}
                 <th className="border border-black px-4 py-2">Comprobante</th>
                 <th className="border border-black px-4 py-2">Acciones</th>
               </tr>
@@ -152,9 +150,10 @@ const PaymentAdministration = () => {
                       </ul>
                     </td>
                     <td className="border border-black px-4 py-2">
-                      {" "}
-                      {/* Mostrar dirección */}
                       {payment.direccion?.direccion || "Sin dirección"}
+                    </td>
+                    <td className="border border-black px-4 py-2 font-bold">
+                      {formatPriceCLP(payment.total)}
                     </td>
                     <td className="border border-black px-4 py-2">
                       <img
@@ -174,13 +173,9 @@ const PaymentAdministration = () => {
                       >
                         <Option value="pendiente">Pendiente</Option>
                         <Option value="verificado" className="bg-green-100">
-                          {icon}
-                          Verificado
+                          {icon} Verificado
                         </Option>
-                        <Option value="rechazado">
-                          {icon}
-                          Rechazado
-                        </Option>
+                        <Option value="rechazado">{icon} Rechazado</Option>
                       </Select>
                     </td>
                   </tr>
