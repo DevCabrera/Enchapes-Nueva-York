@@ -17,6 +17,16 @@ const Pago = sequelize.define("pago", {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
     },
+    id_direccion: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: "direccion",
+            key: "id_direccion",
+        },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+    },
     comprobante: {
         type: DataTypes.STRING,
         allowNull: false,

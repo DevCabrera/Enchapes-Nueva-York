@@ -34,6 +34,5 @@ const Direccion = sequelize.define(
     }
 );
 
-// Relaciones
 
 module.exports = Direccion;

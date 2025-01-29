@@ -3,11 +3,7 @@ import axios from "axios";
 const API_URL = "http://localhost:3005/api/payment";
 
 // Subir comprobante de pago
-export const uploadPayment = async (id_carro, comprobante) => {
-    const formData = new FormData();
-    formData.append("id_carro", id_carro);
-    formData.append("comprobante", comprobante);
-
+export const uploadPayment = async (formData) => {
     const response = await axios.post(`${API_URL}/upload`, formData, {
         withCredentials: true,
         headers: {

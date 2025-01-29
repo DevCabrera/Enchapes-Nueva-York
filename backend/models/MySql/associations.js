@@ -4,6 +4,7 @@ const Producto = require("./product");
 const Pago = require("./payment");
 const OrderDetails = require("./orders");
 const ImgPro = require("./img_pro")
+const Direccion = require("./direccion")
 // Configurar relaciones
 Carrito.hasMany(CarroProd, { foreignKey: "id_carro", as: "productos" });
 CarroProd.belongsTo(Carrito, { foreignKey: "id_carro", as: "carrito" });
@@ -42,5 +43,10 @@ Producto.hasMany(ImgPro, { foreignKey: 'id_producto', as: 'imagenes' });
 
 // Una imagen pertenece a un solo producto
 ImgPro.belongsTo(Producto, { foreignKey: 'id_producto', as: 'producto' });
+//pago direccion
+Pago.belongsTo(Direccion, {
+    foreignKey: "id_direccion",
+    as: "direccion",
+});
 
 module.exports = { Carrito, CarroProd, Producto, Pago, OrderDetails };

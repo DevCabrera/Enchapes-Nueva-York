@@ -3,12 +3,14 @@ const Carro = require("../models/MySql/cart");
 const CarroProd = require("../models/MySql/carro_prod");
 const Producto = require("../models/MySql/product");
 const OrderDetails = require("../models/MySql/orders");
+const Direccion = require("../models/MySql/direccion");
 
 // Subir comprobante de pago
 const uploadPayment = async (req, res) => {
     try {
-        const { id_carro } = req.body;
+        const { id_carro, id_direccion } = req.body;
 
+        // Validar que el carrito exista
         const carrito = await Carro.findByPk(id_carro, {
             include: {
                 model: CarroProd,
@@ -20,14 +22,21 @@ const uploadPayment = async (req, res) => {
             return res.status(404).json({ message: "Carrito no encontrado" });
         }
 
-        // Guardar comprobante en la base de datos
+        // Validar que la dirección exista
+        const direccion = await Direccion.findByPk(id_direccion);
+        if (!direccion) {
+            return res.status(404).json({ message: "Dirección no encontrada" });
+        }
+
+        // Subir el comprobante
         const comprobanteUrl = req.file.path;
         const nuevoPago = await Pago.create({
             id_carro,
+            id_direccion,
             comprobante: comprobanteUrl,
         });
 
-        // Copiar productos del carrito a OrderDetails
+        // Registrar los productos en la tabla OrderDetails
         const detalles = carrito.productos.map((prod) => ({
             id_pago: nuevoPago.id_pago,
             id_producto: prod.id_producto,
@@ -41,7 +50,7 @@ const uploadPayment = async (req, res) => {
         await CarroProd.destroy({ where: { id_carro } });
 
         res.status(200).json({
-            message: "Comprobante subido y detalles del pedido registrados correctamente.",
+            message: "Pago registrado correctamente.",
             pago: nuevoPago,
         });
     } catch (error) {
@@ -112,17 +121,24 @@ const getPayments = async (req, res) => {
                 {
                     model: Carro,
                     as: "carro",
-                    attributes: ["email"], // Asegúrate de incluir el campo "email"
+                    attributes: ["email"], // Correo electrónico del usuario
+                },
+                {
+                    model: Direccion,
+                    as: "direccion", // Relación con el modelo Direccion
+                    attributes: ["direccion"], 
                 },
             ],
             order: [["createdAt", "DESC"]],
         });
+
         res.status(200).json(pagos);
     } catch (error) {
         console.error("Error al obtener los pagos:", error.message);
         res.status(500).json({ message: "Error al obtener los pagos" });
     }
 };
+
 
 
 

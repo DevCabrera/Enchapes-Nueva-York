@@ -90,24 +90,28 @@ const PaymentAdministration = () => {
       <Typography variant="h4" className="mb-4">
         Administración de Pagos
       </Typography>
-      <div className="flex flex-wrap gap-4 mb-4">
-        <Input
-          type="text"
-          placeholder="Buscar por correo electrónico"
-          value={filterEmail}
-          onChange={(e) => setFilterEmail(e.target.value)}
-          className="w-32 font-black"
-        />
-        <Select
-          value={filterState}
-          onChange={(value) => setFilterState(value)}
-          className="w-64"
-        >
-          <Option value="todos">Todos</Option>
-          <Option value="pendiente">Pendiente</Option>
-          <Option value="verificado">Verificado</Option>
-          <Option value="rechazado">Rechazado</Option>
-        </Select>
+      <div className="flex flex-wrap gap-4 mb-4 max-w-full">
+        <div>
+          <Input
+            type="text"
+            placeholder="Buscar por correo electrónico"
+            value={filterEmail}
+            onChange={(e) => setFilterEmail(e.target.value)}
+            className="min-w-[250px] placeholder-black text-black"
+          />
+        </div>
+        <div className="">
+          <Select
+            value={filterState}
+            onChange={(value) => setFilterState(value)}
+            className="min-w-[200px]"
+          >
+            <Option value="todos">Todos</Option>
+            <Option value="pendiente">Pendiente</Option>
+            <Option value="verificado">Verificado</Option>
+            <Option value="rechazado">Rechazado</Option>
+          </Select>
+        </div>
       </div>
       {filteredPayments.length === 0 ? (
         <Typography variant="h5">No hay pagos que coincidan.</Typography>
@@ -119,6 +123,10 @@ const PaymentAdministration = () => {
                 <th className="border border-black px-4 py-2">Correo</th>
                 <th className="border border-black px-4 py-2">Estado Actual</th>
                 <th className="border border-black px-4 py-2">Productos</th>
+                <th className="border border-black px-4 py-2">
+                  Dirección
+                </th>{" "}
+                {/* Nueva columna */}
                 <th className="border border-black px-4 py-2">Comprobante</th>
                 <th className="border border-black px-4 py-2">Acciones</th>
               </tr>
@@ -142,6 +150,11 @@ const PaymentAdministration = () => {
                           </li>
                         ))}
                       </ul>
+                    </td>
+                    <td className="border border-black px-4 py-2">
+                      {" "}
+                      {/* Mostrar dirección */}
+                      {payment.direccion?.direccion || "Sin dirección"}
                     </td>
                     <td className="border border-black px-4 py-2">
                       <img
