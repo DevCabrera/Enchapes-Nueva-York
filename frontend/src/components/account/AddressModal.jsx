@@ -5,6 +5,7 @@ import {
 } from "../../../Client/Services/userServices";
 import PropTypes from "prop-types";
 import { useAuth } from "../../../Client/Context/AuthProvider";
+import Swal from "sweetalert2";
 
 const AddressModal = ({ isOpen, onClose, direccion, onSave }) => {
   const [formData, setFormData] = useState(
@@ -23,6 +24,13 @@ const AddressModal = ({ isOpen, onClose, direccion, onSave }) => {
     e.preventDefault();
     try {
       let savedDireccion;
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Dirección Guardada",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       if (direccion) {
         savedDireccion = await updateDireccion(direccion.id_direccion, {
           ...formData,
@@ -79,7 +87,7 @@ const AddressModal = ({ isOpen, onClose, direccion, onSave }) => {
             </button>
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+              className="bg-[#2c4255] hover:bg-[#3c5d7a] text-white px-4 py-2 rounded"
             >
               Guardar
             </button>

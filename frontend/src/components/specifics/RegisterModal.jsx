@@ -1,21 +1,23 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { createUser } from "../../../Client/Services/userServices";
+import { validateRegisterFields } from "../../validators/ValidatorRegister";
+import Swal from "sweetalert2";
 
 const RegisterModal = ({ open, onClose }) => {
-  // Estado para los datos del formulario
   const [formData, setFormData] = useState({
     email: "",
     firstName: "",
     lastName: "",
     password: "",
     confirmPassword: "",
+    phone: "",
+    countryCode: "+56",
   });
 
-  const [error, setError] = useState(null); // Estado para mensajes de error
-  const [isSubmitting, setIsSubmitting] = useState(false); // Estado para evitar múltiples envíos
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Manejar cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -24,115 +26,129 @@ const RegisterModal = ({ open, onClose }) => {
     }));
   };
 
-  // Manejar el envío del formulario
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Evita la recarga de la página
+    e.preventDefault();
 
-    // Validación de contraseñas
-    if (formData.password !== formData.confirmPassword) {
-      setError("Las contraseñas no coinciden.");
+    const validationErrors = validateRegisterFields(formData); // Usa la función de validación
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
-    setIsSubmitting(true); // Inicia el estado de envío
-    setError(null); // Limpia errores previos
+    setIsSubmitting(true);
+    setErrors({});
 
     try {
-      // Mapeo de datos para adaptarse a la estructura del backend
       const userData = {
         email: formData.email,
         nombre: formData.firstName,
         apellido: formData.lastName,
         password: formData.password,
+        celular: `${formData.countryCode}${formData.phone}`,
       };
 
-      // Llamada al servicio de creación de usuario
       await createUser(userData);
 
-      // Notificación de éxito
-      alert("Registro exitoso. ¡Bienvenido!");
-      onClose(); // Cierra el modal
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Registro exitoso, ya puedes iniciar sesión!",
+        text: "¡Bienvenido!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      onClose();
 
-      // Reinicia los campos del formulario
       setFormData({
         email: "",
         firstName: "",
         lastName: "",
         password: "",
         confirmPassword: "",
+        phone: "", // Resetear el campo de celular
+        countryCode: "+56", // Resetear el código de país
       });
     } catch (error) {
       console.error("Error al registrar:", error);
-      setError(
-        error.response?.data?.message ||
-          "Hubo un problema al registrarse. Intenta nuevamente."
-      );
+      setErrors({
+        form:
+          error.response?.data?.message ||
+          "Hubo un problema al registrarse. Intenta nuevamente.",
+      });
     } finally {
-      setIsSubmitting(false); // Finaliza el estado de envío
+      setIsSubmitting(false);
     }
   };
 
-  // Si el modal no está abierto, no renderizar nada
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg w-96 p-6">
-        {/* Botón para cerrar el modal */}
+      <div className="bg-white rounded-lg w-96 p-6 bg-gradient-to-tr from-[#6b7a96] to-[#FFFFFF]">
         <button
           onClick={onClose}
           className="text-gray-500 hover:text-gray-700 float-right"
         >
           &times;
         </button>
-
-        {/* Contenido del modal */}
         <h2 className="text-2xl font-bold text-center mb-4">
           Registro con Email
         </h2>
 
-        {/* Mensaje de error */}
-        {error && <div className="mb-4 text-red-500 text-center">{error}</div>}
+        {errors.form && (
+          <div className="mb-4 text-red-500 text-center">{errors.form}</div>
+        )}
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit}>
-          {/* Email */}
           <div className="mb-4">
             <label className="block text-gray-700">Email:</label>
             <input
+              placeholder="Enchapes@gmail.com"
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className={`w-full border border-[#353535] rounded px-3 py-2 ${
+                errors.email ? "border-red-500" : ""
+              }`}
               required
             />
+            {errors.email && <div className="text-red-500">{errors.email}</div>}
           </div>
-          {/* Nombre */}
           <div className="mb-4">
             <label className="block text-gray-700">Nombre:</label>
             <input
+              placeholder="Enchapes"
               type="text"
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className={`w-full border border-[#353535] rounded px-3 py-2 ${
+                errors.firstName ? "border-red-500" : ""
+              }`}
               required
             />
+            {errors.firstName && (
+              <div className="text-red-500">{errors.firstName}</div>
+            )}
           </div>
-          {/* Apellido */}
           <div className="mb-4">
             <label className="block text-gray-700">Apellido:</label>
             <input
+              placeholder="Nueva York"
               type="text"
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className={`w-full border border-[#353535] rounded px-3 py-2 ${
+                errors.lastName ? "border-red-500" : ""
+              }`}
               required
             />
+            {errors.lastName && (
+              <div className="text-red-500">{errors.lastName}</div>
+            )}
           </div>
-          {/* Contraseña */}
           <div className="mb-4">
             <label className="block text-gray-700">Contraseña:</label>
             <input
@@ -140,11 +156,15 @@ const RegisterModal = ({ open, onClose }) => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className={`w-full border border-[#353535] rounded px-3 py-2 ${
+                errors.password ? "border-red-500" : ""
+              }`}
               required
             />
+            {errors.password && (
+              <div className="text-red-500">{errors.password}</div>
+            )}
           </div>
-          {/* Confirmar Contraseña */}
           <div className="mb-4">
             <label className="block text-gray-700">Confirmar Contraseña:</label>
             <input
@@ -152,17 +172,46 @@ const RegisterModal = ({ open, onClose }) => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className={`w-full border border-[#353535] rounded px-3 py-2 ${
+                errors.confirmPassword ? "border-red-500" : ""
+              }`}
               required
             />
+            {errors.confirmPassword && (
+              <div className="text-red-500">{errors.confirmPassword}</div>
+            )}
           </div>
-          {/* Botón de registro */}
+          <div className="mb-4">
+            <label className="block text-black">Celular:</label>
+            <div className="flex">
+              <select
+                name="countryCode"
+                value={formData.countryCode}
+                onChange={handleChange}
+                className="border border-[#353535] rounded-l px-3 py-2"
+              >
+                <option value="+56">Chile (+56)</option>
+              </select>
+              <input
+                placeholder="Ejemplo 9XXXXXXXX"
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className={`w-full border border-[#353535] rounded-r px-3 py-2 ${
+                  errors.phone ? "border-red-500" : ""
+                }`}
+                required
+              />
+            </div>
+            {errors.phone && <div className="text-red-500">{errors.phone}</div>}
+          </div>
           <button
             type="submit"
-            className={`bg-blue-500 text-white px-4 py-2 w-full rounded hover:bg-blue-600 ${
-              isSubmitting && "opacity-50 cursor-not-allowed"
+            className={` text-white px-4 py-2 w-full rounded bg-[#2c4255] hover:bg-[#3c5d7a] ${
+              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
             }`}
-            disabled={isSubmitting} // Deshabilita el botón mientras se procesa
+            disabled={isSubmitting}
           >
             {isSubmitting ? "Registrando..." : "Registrarse"}
           </button>
@@ -173,8 +222,8 @@ const RegisterModal = ({ open, onClose }) => {
 };
 
 RegisterModal.propTypes = {
-  open: PropTypes.bool.isRequired, // Indica si el modal está abierto
-  onClose: PropTypes.func.isRequired, // Función para cerrar el modal
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default RegisterModal;

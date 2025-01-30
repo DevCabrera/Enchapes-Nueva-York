@@ -30,9 +30,9 @@ const HomeProducts = () => {
       </div>
 
       {/* Galería de productos */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 bg-gradient-to-tr rounded from-[#6b7a96] to-[#FFFFFF]">
         {products.map((product) => (
-          <ProductCard key={product.id_producto} product={product} />
+          <ProductCard key={product.id_producto} product={product}/>
         ))}
       </div>
 

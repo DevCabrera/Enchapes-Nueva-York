@@ -13,7 +13,7 @@ const ProductCard = ({ product }) => {
       : "default-image-url"; // URL de una imagen predeterminada si no hay imágenes
 
   return (
-    <div className="bg-blue-gray-50 p-4 rounded-lg shadow-lg border-2 border-blue-gray-500">
+    <div className="bg-blue-gray-50 p-4 rounded-lg shadow-lg border-2 border-blue-gray-500 bg-gradient-to-tr from-[#9c9c9c] to-[#FFFFFF]">
       <img
         src={firstImage}
         alt={product.nombre}

@@ -71,7 +71,7 @@ const createUser = async (req, res) => {
     try {
         //console.log("Datos recibidos en el backend:", req.body);
 
-        const { email, nombre, apellido, password } = req.body;
+        const { email, nombre, apellido, password, celular } = req.body;
 
         if (!email || !nombre || !apellido || !password) {
             return res.status(400).json({ message: "Todos los campos son obligatorios" });
@@ -87,6 +87,7 @@ const createUser = async (req, res) => {
             nombre,
             apellido,
             password,
+            celular,
             id_tipo_usuario,
         });
 

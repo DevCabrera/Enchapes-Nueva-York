@@ -64,11 +64,11 @@ const Account = () => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row">
+    <div className="flex flex-col md:flex-row mt-6 ml-6 min-h-screen">
       <Tabs
         value="personalInfo"
         orientation="vertical"
-        className="w-full md:w-auto"
+        className="flex-1 md:flex"
       >
         {/* Sidebar */}
         <TabsHeader className="w-48">
@@ -83,9 +83,9 @@ const Account = () => {
         </TabsHeader>
 
         {/* Contenido */}
-        <TabsBody>
+        <TabsBody className="">
           {data.map(({ value, component }) => (
-            <TabPanel key={value} value={value} className="py-4">
+            <TabPanel key={value} value={value} className="py-4 h-full">
               {component}
             </TabPanel>
           ))}

@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { updatePassword } from "../../../Client/Services/userServices"; // Nueva función para actualizar la contraseña
+import { updatePassword } from "../../../Client/Services/userServices";
 import { useAuth } from "../../../Client/Context/AuthProvider";
+import { validateChangePass } from "../../validators/ValidatorChangePass"; // Importar el validador
+import Swal from "sweetalert2";
 
 const ChangePass = () => {
-  const { user } = useAuth(); // Obtener información del usuario
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     oldPassword: "",
     newPassword: "",
@@ -11,6 +13,7 @@ const ChangePass = () => {
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({}); // Estado para errores de validación
 
   // Manejar cambios en los campos del formulario
   const handleChange = (e) => {
@@ -26,10 +29,12 @@ const ChangePass = () => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+    setValidationErrors({}); // Limpiar errores de validación anteriores
 
-    // Validar que las contraseñas coincidan
-    if (formData.newPassword !== formData.confirmPassword) {
-      setError("Las nuevas contraseñas no coinciden.");
+    // Validar el formulario
+    const errors = validateChangePass(formData);
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors); // Mostrar errores de validación
       return;
     }
 
@@ -38,6 +43,13 @@ const ChangePass = () => {
       await updatePassword(user.email, {
         oldPassword: formData.oldPassword,
         newPassword: formData.newPassword,
+      });
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Contraseña actualizada con éxito",
+        showConfirmButton: false,
+        timer: 1500,
       });
       setSuccess("Contraseña actualizada exitosamente.");
       setFormData({ oldPassword: "", newPassword: "", confirmPassword: "" });
@@ -75,9 +87,16 @@ const ChangePass = () => {
             name="newPassword"
             value={formData.newPassword}
             onChange={handleChange}
-            className="w-full px-3 py-2 border rounded shadow-sm"
+            className={`w-full px-3 py-2 border rounded shadow-sm ${
+              validationErrors.newPassword ? "border-red-500" : ""
+            }`}
             required
           />
+          {validationErrors.newPassword && (
+            <p className="text-red-500 text-sm mt-1">
+              {validationErrors.newPassword}
+            </p>
+          )}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">
@@ -88,13 +107,20 @@ const ChangePass = () => {
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}
-            className="w-full px-3 py-2 border rounded shadow-sm"
+            className={`w-full px-3 py-2 border rounded shadow-sm ${
+              validationErrors.confirmPassword ? "border-red-500" : ""
+            }`}
             required
           />
+          {validationErrors.confirmPassword && (
+            <p className="text-red-500 text-sm mt-1">
+              {validationErrors.confirmPassword}
+            </p>
+          )}
         </div>
         <button
           type="submit"
-          className="w-full bg-green-500 text-white py-2 px-4 rounded"
+          className="w-full bg-[#2c4255] hover:bg-[#3c5d7a] text-white py-2 px-4 rounded"
         >
           Guardar
         </button>

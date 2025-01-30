@@ -42,8 +42,7 @@
 }
 
 body {
-  background: linear-gradient(to bottom, #D2D7DF, #FFFFFF);
+  background: linear-gradient(to bottom, #f0f4f8, #d9e2ec);
   min-height: 100vh;
   margin: 0;
 }
-

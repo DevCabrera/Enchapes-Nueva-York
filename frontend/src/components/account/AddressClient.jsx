@@ -7,9 +7,12 @@ import {
 import { useAuth } from "../../../Client/Context/AuthProvider";
 import AddressModal from "./AddressModal";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import Swal from "sweetalert2"; // Importar SweetAlert2
 
 const AddressClient = () => {
-  const { user } = useAuth(); // Obtener el usuario actual
+  const { user } = useAuth();
   const [direcciones, setDirecciones] = useState([]);
   const [selectedDireccion, setSelectedDireccion] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,13 +20,13 @@ const AddressClient = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/login"); // Redirigir al login
+      navigate("/login");
       return;
     }
 
     const fetchDirecciones = async () => {
       try {
-        const data = await getDirecciones(user.email); // Llamada al backend
+        const data = await getDirecciones(user.email);
         setDirecciones(data);
       } catch (error) {
         console.error("Error al obtener direcciones:", error);
@@ -43,14 +46,38 @@ const AddressClient = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirm = window.confirm("¿Estás seguro de eliminar esta dirección?");
-    if (!confirm) return;
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "¡No podrás revertir esta acción!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
 
-    try {
-      await deleteDireccion(id);
-      setDirecciones(direcciones.filter((dir) => dir.id_direccion !== id));
-    } catch (error) {
-      console.error("Error al eliminar dirección:", error);
+    if (result.isConfirmed) {
+      try {
+        await deleteDireccion(id);
+        setDirecciones(direcciones.filter((dir) => dir.id_direccion !== id));
+
+        // Mostrar alerta de éxito
+        Swal.fire({
+          title: "¡Eliminado!",
+          text: "La dirección ha sido eliminada.",
+          icon: "success",
+        });
+      } catch (error) {
+        console.error("Error al eliminar dirección:", error);
+
+        // Mostrar alerta de error
+        Swal.fire({
+          title: "Error",
+          text: "Hubo un problema al eliminar la dirección.",
+          icon: "error",
+        });
+      }
     }
   };
 
@@ -69,7 +96,7 @@ const AddressClient = () => {
   };
 
   if (!user) {
-    return <p>Redirigiendo...</p>; // Opcional: mostrar algo mientras redirige
+    return <p>Redirigiendo...</p>;
   }
 
   return (
@@ -79,7 +106,14 @@ const AddressClient = () => {
         <div key={dir.id_direccion} className="border p-4 mb-2">
           <div className="flex justify-between">
             <p>
-              <strong>{dir.favorita ? "★" : ""} Dirección:</strong>{" "}
+              <strong>
+                {dir.favorita ? (
+                  <FontAwesomeIcon icon={faStar} className="text-yellow-500" />
+                ) : (
+                  ""
+                )}{" "}
+                Dirección:
+              </strong>{" "}
               {dir.direccion}
             </p>
             <input
@@ -108,7 +142,7 @@ const AddressClient = () => {
       {direcciones.length < 3 && (
         <button
           onClick={() => openModal()}
-          className="bg-blue-500 text-white px-4 py-2 mt-4"
+          className="bg-[#2c4255] hover:bg-[#3c5d7a] text-white px-4 py-2 mt-4"
         >
           Agregar dirección
         </button>

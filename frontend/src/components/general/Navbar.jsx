@@ -10,11 +10,9 @@ import {
 } from "@material-tailwind/react";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../../../Client/Context/AuthProvider";
-import CartDrawer from "../Cart/cartDrawer";
 
 export default function Navbart({ setOpenModal }) {
   const [openNav, setOpenNav] = useState(false);
-  const [openCart, setOpenCart] = useState(false);
   const { user, logoutUser } = useAuth(); // Contexto de autenticación
 
   useEffect(() => {
@@ -96,10 +94,13 @@ export default function Navbart({ setOpenModal }) {
                   <Button
                     variant="outlined"
                     size="sm"
-                    className="text-white border-white"
+                    className="text-white border-white hover:text-orange-600"
                   >
                     Mi Cuenta
                   </Button>
+                </Link>
+                <Link to="/cart">
+                  <ShoppingCartIcon className="h-6 w-6 hover:text-orange-600"/>
                 </Link>
                 <IconButton onClick={logoutUser} className="text-white">
                   <svg
@@ -117,19 +118,6 @@ export default function Navbart({ setOpenModal }) {
                     />
                   </svg>
                 </IconButton>
-                <Link to="/cart">
-                  <ShoppingCartIcon className="h-6 w-6" />
-                </Link>
-                <IconButton
-                  onClick={() => setOpenCart(true)}
-                  className="text-white"
-                >
-                  <ShoppingCartIcon className="h-6 w-6" />
-                </IconButton>
-                <CartDrawer
-                  open={openCart}
-                  onClose={() => setOpenCart(false)}
-                />
               </>
             ) : (
               <Button
