@@ -5,7 +5,13 @@ import {
   verifyPayment,
   rejectPayment,
 } from "../../../Client/Services/paymentServices";
-import { Typography, Select, Option, Input } from "@material-tailwind/react";
+import {
+  Typography,
+  Select,
+  Option,
+  Input,
+  Card,
+} from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import formatPriceCLP from "../../../Client/helpers/helperMoney";
@@ -17,7 +23,15 @@ const PaymentAdministration = () => {
   const [filterEmail, setFilterEmail] = useState("");
   const [filterState, setFilterState] = useState("todos");
   const [modalImage, setModalImage] = useState(null);
-
+  const TABLE_HEAD = [
+    "Correo",
+    "Estado Actual",
+    "Productos",
+    "Dirección",
+    "Total",
+    "Comprobante",
+    "Acciones",
+  ];
   useEffect(() => {
     if (!loading && (!user || user.id_tipo_usuario !== 1)) {
       navigate("/");
@@ -116,46 +130,88 @@ const PaymentAdministration = () => {
       {filteredPayments.length === 0 ? (
         <Typography variant="h5">No hay pagos que coincidan.</Typography>
       ) : (
-        <div className="overflow-auto">
-          <table className="table-auto border-collapse w-full text-left">
+        <Card className="h-full w-full overflow-scroll">
+          <table className="w-full min-w-max table-auto text-left">
             <thead>
-              <tr className="border-black">
-                <th className="border border-black px-4 py-2">Correo</th>
-                <th className="border border-black px-4 py-2">Estado Actual</th>
-                <th className="border border-black px-4 py-2">Productos</th>
-                <th className="border border-black px-4 py-2">Dirección</th>
-                <th className="border border-black px-4 py-2">Total</th>
-                <th className="border border-black px-4 py-2">Comprobante</th>
-                <th className="border border-black px-4 py-2">Acciones</th>
+              <tr>
+                {TABLE_HEAD.map((head) => (
+                  <th
+                    key={head}
+                    className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
+                  >
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal leading-none opacity-70"
+                    >
+                      {head}
+                    </Typography>
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {filteredPayments.map((payment) => {
+              {filteredPayments.map((payment, index) => {
+                const isLast = index === filteredPayments.length - 1;
+                const classes = isLast
+                  ? "p-4"
+                  : "p-4 border-b border-blue-gray-50";
                 const { className, icon } = getSelectClass(payment.estado);
+
                 return (
-                  <tr key={payment.id_pago} className="border-black">
-                    <td className="border border-black px-4 py-2">
-                      {payment.carro?.email}
+                  <tr key={payment.id_pago}>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {payment.carro?.email}
+                      </Typography>
                     </td>
-                    <td className="border border-black px-4 py-2">
-                      {payment.estado}
+                    <td className={`${classes} bg-blue-gray-50/50`}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {payment.estado}
+                      </Typography>
                     </td>
-                    <td className="border border-black px-4 py-2">
+                    <td className={classes}>
                       <ul>
                         {payment.detalles.map((detalle) => (
                           <li key={detalle.id_producto}>
-                            {detalle.producto.nombre} - {detalle.cantidad}
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
+                              {detalle.producto.nombre} - {detalle.cantidad}
+                            </Typography>
                           </li>
                         ))}
                       </ul>
                     </td>
-                    <td className="border border-black px-4 py-2">
-                      {payment.direccion?.direccion || "Sin dirección"}
+                    <td className={`${classes} bg-blue-gray-50/50`}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {payment.direccion?.direccion || "Sin dirección"}
+                      </Typography>
                     </td>
-                    <td className="border border-black px-4 py-2 font-bold">
-                      {formatPriceCLP(payment.total)}
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-bold"
+                      >
+                        {formatPriceCLP(payment.total)}
+                      </Typography>
                     </td>
-                    <td className="border border-black px-4 py-2">
+                    <td className={`${classes} bg-blue-gray-50/50`}>
                       <img
                         src={payment.comprobante}
                         alt="Comprobante"
@@ -163,7 +219,7 @@ const PaymentAdministration = () => {
                         onClick={() => setModalImage(payment.comprobante)}
                       />
                     </td>
-                    <td className="border border-black px-4 py-2">
+                    <td className={classes}>
                       <div className="relative">
                         <Select
                           value={payment.estado}
@@ -176,7 +232,9 @@ const PaymentAdministration = () => {
                           <Option value="verificado" className="bg-green-100">
                             {icon} Verificado
                           </Option>
-                          <Option value="rechazado" className="bg-red-100">{icon} Rechazado</Option>
+                          <Option value="rechazado" className="bg-red-100">
+                            {icon} Rechazado
+                          </Option>
                         </Select>
                       </div>
                     </td>
@@ -185,7 +243,7 @@ const PaymentAdministration = () => {
               })}
             </tbody>
           </table>
-        </div>
+        </Card>
       )}
       {modalImage && (
         <div

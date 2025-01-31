@@ -126,7 +126,7 @@ const AddressClient = () => {
           <div className="mt-2">
             <button
               onClick={() => openModal(dir)}
-              className="text-blue-500 mr-4"
+              className="text-[#2c4255] mr-4"
             >
               Editar
             </button>
@@ -142,7 +142,7 @@ const AddressClient = () => {
       {direcciones.length < 3 && (
         <button
           onClick={() => openModal()}
-          className="bg-[#2c4255] hover:bg-[#3c5d7a] text-white px-4 py-2 mt-4"
+          className="bg-[#2c4255] hover:bg-[#3c5d7a] text-white px-4 py-2 mt-4 rounded-md"
         >
           Agregar dirección
         </button>

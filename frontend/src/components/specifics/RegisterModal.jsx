@@ -3,6 +3,7 @@ import { useState } from "react";
 import { createUser } from "../../../Client/Services/userServices";
 import { validateRegisterFields } from "../../validators/ValidatorRegister";
 import Swal from "sweetalert2";
+import PhoneInput from "./PhoneInput";
 
 const RegisterModal = ({ open, onClose }) => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,12 @@ const RegisterModal = ({ open, onClose }) => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const handlePhoneChange = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      phone: e.target.value,
+    }));
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -25,11 +32,10 @@ const RegisterModal = ({ open, onClose }) => {
       [name]: value,
     }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const validationErrors = validateRegisterFields(formData); // Usa la función de validación
+    const validationErrors = validateRegisterFields(formData);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -65,8 +71,8 @@ const RegisterModal = ({ open, onClose }) => {
         lastName: "",
         password: "",
         confirmPassword: "",
-        phone: "", // Resetear el campo de celular
-        countryCode: "+56", // Resetear el código de país
+        phone: "",
+        countryCode: "+56",
       });
     } catch (error) {
       console.error("Error al registrar:", error);
@@ -181,34 +187,19 @@ const RegisterModal = ({ open, onClose }) => {
               <div className="text-red-500">{errors.confirmPassword}</div>
             )}
           </div>
+
           <div className="mb-4">
-            <label className="block text-black">Celular:</label>
-            <div className="flex">
-              <select
-                name="countryCode"
-                value={formData.countryCode}
-                onChange={handleChange}
-                className="border border-[#353535] rounded-l px-3 py-2"
-              >
-                <option value="+56">Chile (+56)</option>
-              </select>
-              <input
-                placeholder="Ejemplo 9XXXXXXXX"
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className={`w-full border border-[#353535] rounded-r px-3 py-2 ${
-                  errors.phone ? "border-red-500" : ""
-                }`}
-                required
-              />
-            </div>
-            {errors.phone && <div className="text-red-500">{errors.phone}</div>}
+            <label className="block text-gray-700">Celular:</label>
+            <PhoneInput
+              value={formData.phone}
+              onChange={handlePhoneChange}
+              error={errors.phone}
+            />
           </div>
+
           <button
             type="submit"
-            className={` text-white px-4 py-2 w-full rounded bg-[#2c4255] hover:bg-[#3c5d7a] ${
+            className={`text-white px-4 py-2 w-full rounded bg-[#2c4255] hover:bg-[#3c5d7a] ${
               isSubmitting ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={isSubmitting}

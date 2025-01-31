@@ -64,16 +64,11 @@ const Account = () => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row mt-6 ml-6 min-h-screen">
-      <Tabs
-        value="personalInfo"
-        orientation="vertical"
-        className="flex-1 md:flex"
-      >
-        {/* Sidebar */}
-        <TabsHeader className="w-48">
+    <div className="gap-10 mt-10">
+      <Tabs id="custom-animation" value="personalInfo" className="">
+        <TabsHeader className="">
           {data.map(({ label, value, icon }) => (
-            <Tab key={value} value={value} className="place-items-start">
+            <Tab key={value} value={value} className="w-full bg-[#c95a0033]">
               <div className="flex items-center gap-2">
                 {React.createElement(icon, { className: "w-5 h-5" })}
                 {label}
@@ -81,11 +76,15 @@ const Account = () => {
             </Tab>
           ))}
         </TabsHeader>
-
-        {/* Contenido */}
-        <TabsBody className="">
+        <TabsBody
+          animate={{
+            initial: { x: 250 },
+            mount: { x: 0 },
+            unmount: { x: 250 },
+          }}
+        >
           {data.map(({ value, component }) => (
-            <TabPanel key={value} value={value} className="py-4 h-full">
+            <TabPanel key={value} value={value}>
               {component}
             </TabPanel>
           ))}

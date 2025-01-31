@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../Client/Context/AuthProvider";
 import { getPayments } from "../../../Client/Services/paymentServices";
-import { Typography } from "@material-tailwind/react";
+import { Card, Typography } from "@material-tailwind/react";
 import formatPriceCLP from "../../../Client/helpers/helperMoney";
 
 const OrderClient = () => {
@@ -37,58 +37,104 @@ const OrderClient = () => {
     return <Typography variant="h5">No tienes pedidos realizados.</Typography>;
   }
 
+  const TABLE_HEAD = [
+    "Estado",
+    "Dirección a Enviar",
+    "Productos",
+    "Total",
+    "Comprobante",
+  ];
+
   return (
     <div className="p-6">
       <Typography variant="h4" className="mb-4">
         Mis Pedidos
       </Typography>
-      <div className="overflow-auto">
-        <table className="table-auto border-collapse w-full text-left border border-black">
+      <Card className="h-full w-full overflow-scroll">
+        <table className="w-full min-w-max table-auto text-left">
           <thead>
             <tr>
-              <th className="border border-black px-4 py-2">Estado</th>
-              <th className="border border-black px-4 py-2">
-                Dirección a Enviar
-              </th>{" "}
-              <th className="border border-black px-4 py-2">Productos</th>
-              <th className="border border-black px-4 py-2">Total</th>
-              <th className="border border-black px-4 py-2">Comprobante</th>
+              {TABLE_HEAD.map((head) => (
+                <th
+                  key={head}
+                  className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
+                >
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal leading-none opacity-70"
+                  >
+                    {head}
+                  </Typography>
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
-              <tr key={order.id_pago}>
-                <td className="border border-black px-4 py-2">
-                  {order.estado}
-                </td>
-                <td className="border border-black px-4 py-2">
-                  {order.direccion?.direccion || "Sin dirección"}{" "}
-                </td>
-                <td className="border border-black px-4 py-2">
-                  <ul>
-                    {order.detalles.map((detalle) => (
-                      <li key={detalle.id_producto}>
-                        {detalle.producto.nombre} - {detalle.cantidad}
-                      </li>
-                    ))}
-                  </ul>
-                </td>
-                <td className="border border-black px-4 py-2 font-bold">
-                  {formatPriceCLP(order.total)}
-                </td>
-                <td className="border border-black px-4 py-2">
-                  <img
-                    src={order.comprobante}
-                    alt="Comprobante"
-                    className="w-16 h-16 object-cover cursor-pointer"
-                    onClick={() => window.open(order.comprobante, "_blank")}
-                  />
-                </td>
-              </tr>
-            ))}
+            {orders.map((order, index) => {
+              const isLast = index === orders.length - 1;
+              const classes = isLast
+                ? "p-4"
+                : "p-4 border-b border-blue-gray-50";
+
+              return (
+                <tr key={order.id_pago}>
+                  <td className={classes}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {order.estado}
+                    </Typography>
+                  </td>
+                  <td className={`${classes} bg-blue-gray-50/50`}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {order.direccion?.direccion || "Sin dirección"}
+                    </Typography>
+                  </td>
+                  <td className={classes}>
+                    <ul>
+                      {order.detalles.map((detalle) => (
+                        <li key={detalle.id_producto}>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {detalle.producto.nombre} - {detalle.cantidad} M²
+                          </Typography>
+                        </li>
+                      ))}
+                    </ul>
+                  </td>
+                  <td className={`${classes} font-bold`}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {formatPriceCLP(order.total)}
+                    </Typography>
+                  </td>
+                  <td className={`${classes} bg-blue-gray-50/50`}>
+                    <img
+                      src={order.comprobante}
+                      alt="Comprobante"
+                      className="w-16 h-16 object-cover cursor-pointer"
+                      onClick={() => window.open(order.comprobante, "_blank")}
+                    />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
-      </div>
+      </Card>
     </div>
   );
 };

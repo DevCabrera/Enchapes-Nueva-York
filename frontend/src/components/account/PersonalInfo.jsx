@@ -3,6 +3,7 @@ import { Switch } from "@material-tailwind/react";
 import { updateUser } from "../../../Client/Services/userServices";
 import { useAuth } from "../../../Client/Context/AuthProvider";
 import { validatePersonalFields } from "../../../src/validators/ValidatePersonal";
+import PhoneInput from "../specifics/PhoneInput";
 
 const PersonalInfo = () => {
   const { user, setUser } = useAuth();
@@ -44,7 +45,12 @@ const PersonalInfo = () => {
       [name]: value,
     });
   };
-
+  const handlePhoneChange = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      phone: e.target.value,
+    }));
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -139,31 +145,15 @@ const PersonalInfo = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700">Teléfono celular*</label>
-          <div className="flex">
-            <select
-              name="countryCode"
-              value={formData.countryCode}
-              onChange={handleChange}
-              className="border rounded-l px-3 py-2"
-              disabled={!isEditable}
-            >
-              <option value="+56">Chile (+56)</option>
-            </select>
-            <input
-              type="tel"
-              name="phone"
+          <div className="mb-4">
+            <label className="block text-gray-700">Teléfono celular*</label>
+            <PhoneInput
               value={formData.phone}
-              onChange={handleChange}
-              className={`w-full border rounded-r px-3 py-2 ${
-                errors.celular ? "border-red-500" : ""
-              }`}
+              onChange={handlePhoneChange}
+              error={errors.celular}
               disabled={!isEditable}
             />
           </div>
-          {errors.celular && (
-            <div className="text-red-500 text-sm mt-1">{errors.celular}</div>
-          )}
         </div>
         {isEditable && (
           <button
