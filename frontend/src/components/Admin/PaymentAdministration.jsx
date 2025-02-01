@@ -187,7 +187,7 @@ const PaymentAdministration = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {detalle.producto.nombre} - {detalle.cantidad}
+                              {detalle.producto.nombre} - {detalle.cantidad} m²
                             </Typography>
                           </li>
                         ))}

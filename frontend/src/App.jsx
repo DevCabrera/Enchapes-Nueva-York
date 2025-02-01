@@ -26,6 +26,7 @@ import GoogleSign from "./components/login/GoogleSign";
 // Pedidos
 import OrderClient from "./components/Orders/OrderClient";
 import PaymentGene from "./components/specifics/PaymentGene";
+import GalleryAdmin from "./components/Admin/GalleryAdmin";
 
 function App() {
   return (
@@ -94,6 +95,14 @@ function MainContent() {
           element={
             <ProtectedRoute requiredRole={2}>
               <PaymentGene />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/gallery"
+          element={
+            <ProtectedRoute requiredRole={1}>
+              <GalleryAdmin />
             </ProtectedRoute>
           }
         />

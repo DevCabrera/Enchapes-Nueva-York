@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const upload = require("../middlewares/upload");
+const uploadPayments = require("../middlewares/uploadPayment");
 const {
     uploadPayment,
     verifyPayment,
@@ -10,7 +10,7 @@ const {
 const { verifyToken, isAdmin } = require("../middlewares/authMiddlerawe");
 
 // Ruta para subir un comprobante de pago
-router.post("/upload", verifyToken, upload.single("comprobante"), uploadPayment);
+router.post("/upload", verifyToken, uploadPayments.single("comprobante"), uploadPayment);
 
 // Ruta para verificar un pago (solo admin)
 router.put("/verify/:id_pago", [verifyToken, isAdmin], verifyPayment);

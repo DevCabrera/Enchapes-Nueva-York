@@ -36,7 +36,13 @@ const Administration = () => {
       >
         Administración de Pagos
       </button>
-
+      {/* Botón para ir a Galeria */}
+      <button
+        className="mb-4 bg-purple-500 text-white px-4 py-2 rounded"
+        onClick={() => navigate("/admin/gallery")} // Redirige a la ruta
+      >
+        ADministrar Galería
+      </button>
       {/* Lista de productos */}
       <AdminProductList />
 

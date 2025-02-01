@@ -13,8 +13,8 @@ const PersonalInfo = () => {
     apellido: "",
     email: "",
     celular: "",
-    countryCode: "+56", // Nuevo campo para el código de país
-    phone: "", // Nuevo campo para el número sin el código
+    countryCode: "+56",
+    phone: "",
   });
   const [errors, setErrors] = useState({});
 
