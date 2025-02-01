@@ -51,8 +51,8 @@ const AddressClient = () => {
       text: "¡No podrás revertir esta acción!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#2c4255",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
     });
