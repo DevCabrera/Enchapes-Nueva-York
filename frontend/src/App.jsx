@@ -27,6 +27,7 @@ import GoogleSign from "./components/login/GoogleSign";
 import OrderClient from "./components/Orders/OrderClient";
 import PaymentGene from "./components/specifics/PaymentGene";
 import GalleryAdmin from "./components/Admin/GalleryAdmin";
+import ProductAdm from "./components/Admin/ProductAdm";
 
 function App() {
   return (
@@ -127,6 +128,14 @@ function MainContent() {
           element={
             <ProtectedRoute requiredRole={1}>
               <Administration />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/products"
+          element={
+            <ProtectedRoute requiredRole={1}>
+              <ProductAdm />
             </ProtectedRoute>
           }
         />

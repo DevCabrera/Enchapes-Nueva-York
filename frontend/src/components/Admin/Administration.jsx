@@ -20,7 +20,12 @@ const Administration = () => {
       >
         Agregar Producto
       </button>
-
+      <button
+        className="bg-orange-500 text-white px-4 py-2 rounded"
+        onClick={() => navigate("/admin/products")}
+      >
+        Administración de Productos
+      </button>
       {/* Botón para ver lista de usuarios */}
       <button
         className="mb-4 bg-green-500 text-white px-4 py-2 rounded"
