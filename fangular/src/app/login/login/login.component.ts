@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { HttpClient } from '@angular/common/http';
+import { Component, inject, Optional, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../Services/auth-services.service';
 
 @Component({
   selector: 'app-login',
@@ -28,26 +28,27 @@ export class LoginComponent {
   password: string = '';
 
   constructor(
-    public dialogRef: MatDialogRef<LoginComponent>,
-    private http: HttpClient,
-    private router: Router
+    private authService: AuthService,
+    private router: Router,
+    @Optional() public dialogRef?: MatDialogRef<LoginComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
   ) { }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
   }
 
   onSubmit(): void {
-    this.http.post('http://localhost:3005/api/auth/login', { email: this.email, password: this.password })
-      .subscribe({
-        next: (response: any) => {
-          document.cookie = `authToken=${response.token}; path=/;`;
+    this.authService.login({ email: this.email, password: this.password }).subscribe({
+      next: () => {
+        if (this.dialogRef) {
           this.dialogRef.close();
-          this.router.navigate(['/']);
-        },
-        error: (error) => {
-          console.error('Error al iniciar sesión:', error);
         }
-      });
+        this.router.navigate(['/']);
+      },
+      error: (error) => console.error('Error al iniciar sesión:', error)
+    });
   }
 }

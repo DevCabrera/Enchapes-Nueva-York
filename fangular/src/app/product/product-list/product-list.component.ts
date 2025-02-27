@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../Services/product.service';
-import { HttpClientModule } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-product-list',
@@ -9,7 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'],
   providers: [ProductService],
-  imports: [CommonModule, HttpClientModule]
+  imports: [CommonModule]
 })
 export class ProductListComponent implements OnInit {
   products: any[] = [];

@@ -1,0 +1,29 @@
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-4">Administración de Productos</h1>
+  <button class="mb-4 bg-blue-500 text-white px-4 py-2 rounded" (click)="openProductForm()">Agregar Producto</button>
+  <table class="w-full min-w-max table-auto text-left">
+    <thead>
+      <tr>
+        <th class="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Nombre</th>
+        <th class="border-b border-blue-gray-100 bg-blue-gray-50 p-4">SKU</th>
+        <th class="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Precio</th>
+        <th class="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (product of products; track product.id_producto) {
+      <tr>
+        <td class="p-4">{{ product.nombre }}</td>
+        <td class="p-4">{{ product.sku }}</td>
+        <td class="p-4">{{ product.precio_m2 }}</td>
+        <td class="p-4">
+          <button class="bg-green-500 text-white px-4 py-2 rounded" (click)="openProductForm(product)">Editar</button>
+          <button class="bg-red-500 text-white px-4 py-2 rounded"
+            (click)="deleteProduct(product.id_producto)">Eliminar</button>
+        </td>
+      </tr>
+      }
+    </tbody>
+
+  </table>
+</div>
