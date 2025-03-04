@@ -63,7 +63,7 @@ export class AuthService {
   }
 
   private getRoleFromToken(token: string): number | null {
-    console.log('Token recibido:', token); // Verificar el token
+    console.log('Token recibido:', token);
     if (!token) {
       console.error('Token no proporcionado');
       return null;
