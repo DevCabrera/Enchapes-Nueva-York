@@ -35,6 +35,10 @@ const Pago = sequelize.define("pago", {
         type: DataTypes.ENUM("pendiente", "verificado", "rechazado"),
         defaultValue: "pendiente",
     },
+    estado_envio: { 
+        type: DataTypes.ENUM("pendiente", "enviado", "entregado"),
+        defaultValue: "pendiente",
+    },
 });
 
 module.exports = Pago;

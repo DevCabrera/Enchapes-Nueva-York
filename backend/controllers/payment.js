@@ -42,6 +42,8 @@ const uploadPayment = async (req, res) => {
             id_producto: prod.id_producto,
             cantidad: prod.cantidad,
             subtotal: prod.subtotal,
+            // precio_unitario: prod.producto.ofertas.length > 0 ? prod.producto.ofertas[0].precio_oferta : prod.producto.precio_m2,
+            // subtotal: prod.cantidad * (prod.producto.oferta ? prod.producto.oferta.precio_descuento : prod.producto.precio_m2),
         }));
 
         await OrderDetails.bulkCreate(detalles);
@@ -58,7 +60,6 @@ const uploadPayment = async (req, res) => {
         res.status(500).json({ message: "Error al subir el comprobante" });
     }
 };
-
 
 // Verificar un pago
 const verifyPayment = async (req, res) => {
@@ -79,6 +80,28 @@ const verifyPayment = async (req, res) => {
     } catch (error) {
         console.error("Error al verificar el pago:", error.message);
         res.status(500).json({ message: "Error al verificar el pago" });
+    }
+};
+// Actualizar estado de envío
+const updateShippingStatus = async (req, res) => {
+    try {
+        const { id_pago } = req.params;
+        const { estado_envio } = req.body;
+
+        // Encontrar el pago
+        const pago = await Pago.findByPk(id_pago);
+        if (!pago) {
+            return res.status(404).json({ message: "Pago no encontrado" });
+        }
+
+        // Actualizar el estado de envío
+        pago.estado_envio = estado_envio;
+        await pago.save();
+
+        res.status(200).json({ message: "Estado de envío actualizado correctamente", pago });
+    } catch (error) {
+        console.error("Error al actualizar el estado de envío:", error.message);
+        res.status(500).json({ message: "Error al actualizar el estado de envío" });
     }
 };
 
@@ -145,13 +168,10 @@ const getPayments = async (req, res) => {
     }
 };
 
-
-
-
-
 module.exports = {
     uploadPayment,
     verifyPayment,
     rejectPayment,
     getPayments,
+    updateShippingStatus
 };

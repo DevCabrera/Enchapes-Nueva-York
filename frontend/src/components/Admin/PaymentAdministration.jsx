@@ -4,6 +4,7 @@ import {
   getPayments,
   verifyPayment,
   rejectPayment,
+  updateShippingStatus,
 } from "../../../Client/Services/paymentServices";
 import {
   Typography,
@@ -13,8 +14,9 @@ import {
   Card,
 } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { CheckIcon, XMarkIcon, TruckIcon } from "@heroicons/react/24/solid";
 import formatPriceCLP from "../../../Client/helpers/helperMoney";
+
 const PaymentAdministration = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -23,15 +25,18 @@ const PaymentAdministration = () => {
   const [filterEmail, setFilterEmail] = useState("");
   const [filterState, setFilterState] = useState("todos");
   const [modalImage, setModalImage] = useState(null);
+
   const TABLE_HEAD = [
     "Correo",
     "Estado Actual",
+    "Estado de Envío",
     "Productos",
     "Dirección",
     "Total",
     "Comprobante",
     "Acciones",
   ];
+
   useEffect(() => {
     if (!loading && (!user || user.id_tipo_usuario !== 1)) {
       navigate("/");
@@ -67,6 +72,22 @@ const PaymentAdministration = () => {
     }
   };
 
+  const handleShippingStatusChange = async (idPago, newStatus) => {
+    try {
+      await updateShippingStatus(idPago, newStatus);
+
+      setPayments((prev) =>
+        prev.map((payment) =>
+          payment.id_pago === idPago
+            ? { ...payment, estado_envio: newStatus }
+            : payment
+        )
+      );
+    } catch (error) {
+      console.error("Error al cambiar el estado de envío:", error);
+    }
+  };
+
   const getSelectClass = (estado) => {
     switch (estado) {
       case "pendiente":
@@ -80,6 +101,25 @@ const PaymentAdministration = () => {
         return {
           className: "bg-red-200",
           icon: <XMarkIcon className="w-5 h-5 inline mr-2" />,
+        };
+      default:
+        return { className: "", icon: null };
+    }
+  };
+
+  const getShippingClass = (estado_envio) => {
+    switch (estado_envio) {
+      case "pendiente":
+        return { className: "bg-blue-gray-400", icon: null };
+      case "enviado":
+        return {
+          className: "bg-yellow-200",
+          icon: <TruckIcon className="w-5 h-5 inline mr-2" />,
+        };
+      case "entregado":
+        return {
+          className: "bg-green-200",
+          icon: <CheckIcon className="w-5 h-5 inline mr-2" />,
         };
       default:
         return { className: "", icon: null };
@@ -157,6 +197,8 @@ const PaymentAdministration = () => {
                   ? "p-4"
                   : "p-4 border-b border-blue-gray-50";
                 const { className, icon } = getSelectClass(payment.estado);
+                const { className: shippingClassName, icon: shippingIcon } =
+                  getShippingClass(payment.estado_envio);
 
                 return (
                   <tr key={payment.id_pago}>
@@ -177,6 +219,25 @@ const PaymentAdministration = () => {
                       >
                         {payment.estado}
                       </Typography>
+                    </td>
+                    <td className={classes}>
+                      <div className="relative">
+                        <Select
+                          value={payment.estado_envio}
+                          onChange={(newStatus) =>
+                            handleShippingStatusChange(payment.id_pago, newStatus)
+                          }
+                          className={`w-full gap-2 ${shippingClassName} z-30`}
+                        >
+                          <Option value="pendiente">Pendiente</Option>
+                          <Option value="enviado" className="bg-yellow-100">
+                            {shippingIcon} Enviado
+                          </Option>
+                          <Option value="entregado" className="bg-green-100">
+                            {shippingIcon} Entregado
+                          </Option>
+                        </Select>
+                      </div>
                     </td>
                     <td className={classes}>
                       <ul>
