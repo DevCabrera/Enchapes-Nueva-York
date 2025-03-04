@@ -15,20 +15,20 @@ const Administration = () => {
 
       {/* Botón para agregar producto */}
       <button
-        className="mb-4 bg-blue-500 text-white px-4 py-2 rounded"
+        className="mb-4 bg-blue-500 text-white px-4 py-2 rounded mr-2"
         onClick={() => setIsFormOpen(true)}
       >
         Agregar Producto
       </button>
       <button
-        className="bg-orange-500 text-white px-4 py-2 rounded"
+        className="bg-orange-500 text-white px-4 py-2 rounded mr-2"
         onClick={() => navigate("/admin/products")}
       >
-        Administración de Productos
+        Administración de Productos beta
       </button>
       {/* Botón para ver lista de usuarios */}
       <button
-        className="mb-4 bg-green-500 text-white px-4 py-2 rounded"
+        className="mb-4 bg-green-500 text-white px-4 py-2 rounded mr-2"
         onClick={() => setIsUserListModalOpen(true)}
       >
         Lista de Usuarios
@@ -36,14 +36,14 @@ const Administration = () => {
 
       {/* Botón para ir a PaymentAdministration */}
       <button
-        className="mb-4 bg-purple-500 text-white px-4 py-2 rounded"
+        className="mb-4 bg-purple-500 text-white px-4 py-2 rounded mr-2"
         onClick={() => navigate("/payment-administration")} // Redirige a la ruta
       >
         Administración de Pagos
       </button>
       {/* Botón para ir a Galeria */}
       <button
-        className="mb-4 bg-purple-500 text-white px-4 py-2 rounded"
+        className="mb-4 bg-purple-500 text-white px-4 py-2 rounded gap-2"
         onClick={() => navigate("/admin/gallery")} // Redirige a la ruta
       >
         ADministrar Galería

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../../Client/Context/AuthProvider";
 import { getPayments } from "../../../Client/Services/paymentServices";
 import { Card, Typography } from "@material-tailwind/react";
+import { CheckIcon, XMarkIcon, TruckIcon } from "@heroicons/react/24/solid";
 import formatPriceCLP from "../../../Client/helpers/helperMoney";
 
 const OrderClient = () => {
@@ -38,12 +39,51 @@ const OrderClient = () => {
   }
 
   const TABLE_HEAD = [
-    "Estado",
+    "Estado de pago",
+    "Estado de envío",
     "Dirección a Enviar",
     "Productos",
     "Total",
     "Comprobante",
   ];
+
+  const getSelectClass = (estado) => {
+    switch (estado) {
+      case "pendiente":
+        return { className: "bg-blue-gray-400", icon: null };
+      case "verificado":
+        return {
+          className: "bg-green-200",
+          icon: <CheckIcon className="w-5 h-5 inline mr-2" />,
+        };
+      case "rechazado":
+        return {
+          className: "bg-red-200",
+          icon: <XMarkIcon className="w-5 h-5 inline mr-2" />,
+        };
+      default:
+        return { className: "", icon: null };
+    }
+  };
+
+  const getShippingClass = (estado_envio) => {
+    switch (estado_envio) {
+      case "pendiente":
+        return { className: "bg-blue-gray-400", icon: null };
+      case "enviado":
+        return {
+          className: "bg-yellow-200",
+          icon: <TruckIcon className="w-5 h-5 inline mr-2" />,
+        };
+      case "entregado":
+        return {
+          className: "bg-green-200",
+          icon: <CheckIcon className="w-5 h-5 inline mr-2" />,
+        };
+      default:
+        return { className: "", icon: null };
+    }
+  };
 
   return (
     <div className="p-6">
@@ -76,16 +116,28 @@ const OrderClient = () => {
               const classes = isLast
                 ? "p-4"
                 : "p-4 border-b border-blue-gray-50";
+              const { className, icon } = getSelectClass(order.estado);
+              const { className: shippingClassName, icon: shippingIcon } =
+                getShippingClass(order.estado_envio);
 
               return (
                 <tr key={order.id_pago}>
-                  <td className={classes}>
+                  <td className={`${classes} ${className}`}>
                     <Typography
                       variant="small"
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {order.estado}
+                      {icon} {order.estado}
+                    </Typography>
+                  </td>
+                  <td className={`${classes} ${shippingClassName}`}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {shippingIcon} {order.estado_envio}
                     </Typography>
                   </td>
                   <td className={`${classes} bg-blue-gray-50/50`}>

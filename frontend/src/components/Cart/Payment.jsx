@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import { uploadPayment } from "../../../Client/Services/paymentServices";
 import { getDirecciones } from "../../../Client/Services/userServices";
 import { useAuth } from "../../../Client/Context/AuthProvider";
-import { Button, Input, Typography } from "@material-tailwind/react";
+import { Button, Input, Typography, Card } from "@material-tailwind/react";
+import { BanknotesIcon, UserIcon, CreditCardIcon, IdentificationIcon, MapPinIcon, ArrowUpTrayIcon, EnvelopeIcon } from "@heroicons/react/24/solid";
 
 const UploadPayment = ({ idCarro }) => {
   const { user } = useAuth(); // Obtener el usuario autenticado
@@ -12,6 +13,16 @@ const UploadPayment = ({ idCarro }) => {
   const [message, setMessage] = useState("");
   const [direcciones, setDirecciones] = useState([]);
   const [selectedDireccion, setSelectedDireccion] = useState(null);
+
+  // Información de la cuenta bancaria
+  const cuentaBancaria = {
+    banco: "Banco Falabella",
+    titular: "Diego LLancao",
+    numeroCuenta: "1-584-167938-0",
+    tipoCuenta: "Cuenta Corriente",
+    rut: "19.681.845-6",
+    email: "enchapesnewyork@gmail.com",
+  };
 
   // Cargar direcciones al montar el componente
   useEffect(() => {
@@ -57,7 +68,6 @@ const UploadPayment = ({ idCarro }) => {
       formData.append("id_carro", idCarro);
       formData.append("id_direccion", selectedDireccion);
       formData.append("comprobante", comprobante);
-      console.log("que soy", idCarro, selectedDireccion, comprobante);
       const response = await uploadPayment(formData);
       setMessage(response.message || "Comprobante subido correctamente.");
     } catch (error) {
@@ -69,13 +79,41 @@ const UploadPayment = ({ idCarro }) => {
   };
 
   return (
-    <div className="p-4 border rounded-lg">
-      <Typography variant="h5" color="blue-gray" className="mb-4">
+    <div className="p-6">
+      <Typography variant="h4" color="blue-gray" className="mb-4">
         Subir Comprobante de Pago
       </Typography>
-      {/* Selección de dirección */}
-      <div>
-        <Typography variant="small" color="blue-gray" className="mb-2">
+      <Card className="p-4 mb-4">
+        <Typography variant="h5" color="blue-gray" className="mb-2">
+          Información de la Cuenta Bancaria
+        </Typography>
+        <Typography variant="small" color="blue-gray" className="flex items-center">
+          <BanknotesIcon className="w-5 h-5 mr-2" />
+          <strong>Banco:</strong> {cuentaBancaria.banco}
+        </Typography>
+        <Typography variant="small" color="blue-gray" className="flex items-center">
+          <UserIcon className="w-5 h-5 mr-2" />
+          <strong>Titular:</strong> {cuentaBancaria.titular}
+        </Typography>
+        <Typography variant="small" color="blue-gray" className="flex items-center">
+          <CreditCardIcon className="w-5 h-5 mr-2" />
+          <strong>Número de Cuenta:</strong> {cuentaBancaria.numeroCuenta}
+        </Typography>
+        <Typography variant="small" color="blue-gray" className="flex items-center">
+          <CreditCardIcon className="w-5 h-5 mr-2" />
+          <strong>Tipo de Cuenta:</strong> {cuentaBancaria.tipoCuenta}
+        </Typography>
+        <Typography variant="small" color="blue-gray" className="flex items-center">
+          <IdentificationIcon className="w-5 h-5 mr-2" />
+          <strong>RUT:</strong> {cuentaBancaria.rut}
+        </Typography>
+        <Typography variant="small" color="blue-gray" className="flex items-center">
+          <EnvelopeIcon className="w-5 h-5 mr-2" />
+          <strong>Email:</strong> {cuentaBancaria.email}
+        </Typography>
+      </Card>
+      <Card className="p-4 mb-4">
+        <Typography variant="h5" color="blue-gray" className="mb-2">
           Selecciona una dirección para la entrega:
         </Typography>
         {direcciones.length > 0 ? (
@@ -90,7 +128,10 @@ const UploadPayment = ({ idCarro }) => {
                   onChange={() => handleDireccionChange(dir.id_direccion)}
                   className="mr-2"
                 />
-                <Typography>{dir.direccion}</Typography>
+                <Typography className="flex items-center">
+                  <MapPinIcon className="w-5 h-5 mr-2" />
+                  {dir.direccion}
+                </Typography>
               </div>
             ))}
           </div>
@@ -100,30 +141,41 @@ const UploadPayment = ({ idCarro }) => {
             tu perfil.
           </Typography>
         )}
-      </div>
-      {/* Subir comprobante */}
-      <form onSubmit={handleSubmit} className="mt-4">
-        <Input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          required
-          className="mb-4"
-        />
-        <Button
-          type="submit"
-          color="green"
-          disabled={loading || !selectedDireccion}
-          className="w-full"
-        >
-          {loading ? "Subiendo..." : "Subir Comprobante"}
-        </Button>
-      </form>
-      {message && (
-        <Typography variant="small" color="red" className="mt-4">
-          {message}
-        </Typography>
-      )}
+      </Card>
+      <Card className="p-4">
+        <form onSubmit={handleSubmit}>
+          <Typography variant="h5" color="blue-gray" className="mb-4">
+            Subir Comprobante
+          </Typography>
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            required
+            className="mb-4"
+          />
+          <Button
+            type="submit"
+            color="green"
+            disabled={loading || !selectedDireccion}
+            className="w-full flex items-center justify-center"
+          >
+            {loading ? (
+              "Subiendo..."
+            ) : (
+              <>
+                <ArrowUpTrayIcon className="w-5 h-5 mr-2" />
+                Subir Comprobante
+              </>
+            )}
+          </Button>
+        </form>
+        {message && (
+          <Typography variant="small" color="red" className="mt-4">
+            {message}
+          </Typography>
+        )}
+      </Card>
     </div>
   );
 };

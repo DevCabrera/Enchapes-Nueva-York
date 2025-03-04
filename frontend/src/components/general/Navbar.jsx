@@ -41,7 +41,7 @@ export default function Navbart({ setOpenModal }) {
         className="p-1 font-normal text-white"
       >
         <Link to="/products" className="flex items-center hover:text-[#E67E22]">
-          Bloques
+          Revestimientos
         </Link>
       </Typography>
       <Typography
@@ -100,7 +100,7 @@ export default function Navbart({ setOpenModal }) {
                   </Button>
                 </Link>
                 <Link to="/cart">
-                  <ShoppingCartIcon className="h-6 w-6 hover:text-orange-600"/>
+                  <ShoppingCartIcon className="h-6 w-6 hover:text-orange-600" />
                 </Link>
                 <IconButton onClick={logoutUser} className="text-white">
                   <svg

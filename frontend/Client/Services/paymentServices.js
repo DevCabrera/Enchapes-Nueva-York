@@ -20,6 +20,18 @@ export const verifyPayment = async (id_pago) => {
     });
     return response.data;
 };
+// Actualizar estado de envío
+export const updateShippingStatus = async (id_pago, newStatus) => {
+    try {
+        const response = await axios.put(`${API_URL}/updateShippingStatus/${id_pago}`, { estado_envio: newStatus }, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error al actualizar el estado de envío:', error);
+        throw error;
+    }
+};
 
 // Rechazar un pago (solo admin)
 export const rejectPayment = async (id_pago) => {
