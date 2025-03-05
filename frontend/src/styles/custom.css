@@ -31,7 +31,7 @@
 }
 
 .animate-zoomc {
-  animation: zoom 20s infinite ease-in-out; /* Duración de 10s, se repite infinitamente */
+  animation: zoom 10s infinite ease-in-out; 
   overflow: hidden;
 }
 

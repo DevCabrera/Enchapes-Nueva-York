@@ -6,12 +6,17 @@ import {
 } from "../../../Client/Services/productServices";
 import { Button, Input, Typography, Card } from "@material-tailwind/react";
 import AdminProductForm from "./AdminProductForm";
+// import OfferModal from "./OfferModal"; // Comentado
 
 const ProductAdm = () => {
   const [products, setProducts] = useState([]);
   const [editingProductId, setEditingProductId] = useState(null);
   const [formData, setFormData] = useState({});
   const [isFormOpen, setIsFormOpen] = useState(false);
+  // const [isOfferModalOpen, setIsOfferModalOpen] = useState(false); // Comentado
+  // const [selectedProduct, setSelectedProduct] = useState(null); // Comentado
+  // const [selectedOffer, setSelectedOffer] = useState(null); // Comentado
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -93,6 +98,33 @@ const ProductAdm = () => {
       console.error("Error al eliminar producto:", error);
     }
   };
+
+  // const handleOpenOfferModal = (product) => {
+  //   if (product) {
+  //     setSelectedProduct(product);
+  //     setSelectedOffer(product.ofertas?.[0] || null);
+  //     setIsOfferModalOpen(true);
+  //     console.log("Producto seleccionado:", product);
+  //   } else {
+  //     console.error("No se ha seleccionado un producto válido.");
+  //   }
+  // };
+
+  // const handleSaveOffer = (savedOffer) => {
+  //   setProducts((prevProducts) =>
+  //     prevProducts.map((prod) =>
+  //       prod.id_producto === savedOffer.id_producto
+  //         ? { ...prod, ofertas: [savedOffer] }
+  //         : prod
+  //     )
+  //   );
+  // };
+
+  // const handleCloseOfferModal = () => {
+  //   setSelectedProduct(null);
+  //   setSelectedOffer(null);
+  //   setIsOfferModalOpen(false);
+  // };
 
   const TABLE_HEAD = [
     "Imágenes",
@@ -242,25 +274,19 @@ const ProductAdm = () => {
                         Editar
                       </Button>
                     )}
-                    {/* <Button
+                    <Button
                       color="purple"
-                      onClick={() => handleOpenOfferModal(product)}
+                      // onClick={() => handleOpenOfferModal(product)}
+                      disabled // Deshabilitado
                     >
-                      Agregar Oferta
-                    </Button> */}
+                      {product.ofertas?.length > 0 ? "Editar Oferta" : "Agregar Oferta"}
+                    </Button>
                     <Button
                       color="red"
                       onClick={() => handleDelete(product.id_producto)}
                     >
                       Eliminar
                     </Button>
-                    <AdminProductForm
-                      isOpen={isFormOpen}
-                      onClose={() => setIsFormOpen(false)}
-                      onSave={(newProduct) =>
-                        console.log("Producto guardado:", newProduct)
-                      }
-                    />
                   </div>
                 </td>
               </tr>
@@ -268,6 +294,21 @@ const ProductAdm = () => {
           </tbody>
         </table>
       </Card>
+      <AdminProductForm
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        onSave={(newProduct) => {
+          setProducts((prevProducts) => [...prevProducts, newProduct]);
+          setIsFormOpen(false);
+        }}
+      />
+      {/* <OfferModal
+        isOpen={isOfferModalOpen}
+        onClose={handleCloseOfferModal}
+        product={selectedProduct}
+        offer={selectedOffer}
+        onSave={handleSaveOffer}
+      /> */}
     </div>
   );
 };

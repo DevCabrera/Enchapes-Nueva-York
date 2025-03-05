@@ -4,13 +4,15 @@ const Producto = require("./product");
 const Pago = require("./payment");
 const OrderDetails = require("./orders");
 const ImgPro = require("./img_pro")
-const Direccion = require("./direccion")
-// Configurar relaciones
+const Direccion = require("./direccion");
+const Oferta = require("./offers");
+
+
+
+// Configurar relaciones carrito carroprod intermedio
 Carrito.hasMany(CarroProd, { foreignKey: "id_carro", as: "productos" });
 CarroProd.belongsTo(Carrito, { foreignKey: "id_carro", as: "carrito" });
 CarroProd.belongsTo(Producto, { foreignKey: "id_producto", as: "producto" });
-
-
 
 //pago
 Carrito.hasOne(Pago, { foreignKey: "id_carro", as: "pago" });
@@ -48,5 +50,9 @@ Pago.belongsTo(Direccion, {
     foreignKey: "id_direccion",
     as: "direccion",
 });
+
+//ofertas producto
+// Oferta.belongsTo(Producto, { foreignKey: "id_producto", as: "producto" });
+// Producto.hasMany(Oferta, { foreignKey: "id_producto", as: "ofertas" });
 
 module.exports = { Carrito, CarroProd, Producto, Pago, OrderDetails };

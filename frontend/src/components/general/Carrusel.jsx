@@ -2,7 +2,7 @@ import { Carousel, Typography, Button } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 export default function Carouselw() {
   return (
-    <Carousel className="">
+    <Carousel>
       <div className="relative h-[500px] w-full overflow-hidden">
         <img
           src="src/img/enchape1.jpg"
@@ -27,7 +27,7 @@ export default function Carouselw() {
             </Typography>
             <div className="flex justify-center gap-2">
               <Button size="lg" color="white">
-              <Link to="/products">
+                <Link to="/products">
                   <a className="flex items-center">Revestimientos</a>
                 </Link>
               </Button>

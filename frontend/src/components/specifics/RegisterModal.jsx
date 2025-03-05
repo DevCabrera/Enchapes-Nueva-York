@@ -90,10 +90,10 @@ const RegisterModal = ({ open, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg w-96 p-6 bg-gradient-to-tr from-[#6b7a96] to-[#FFFFFF]">
+      <div className="bg-white rounded-lg w-96 p-6 bg-gradient-to-tr from-[#15304d] to-[#e9e9e9]">
         <button
           onClick={onClose}
-          className="text-gray-500 hover:text-gray-700 float-right"
+          className="text-red-600 hover:text-orange-700 float-right"
         >
           &times;
         </button>
@@ -107,31 +107,29 @@ const RegisterModal = ({ open, onClose }) => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700">Email:</label>
+            <label className="block text-white">Email:</label>
             <input
               placeholder="Enchapes@gmail.com"
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full border border-[#353535] rounded px-3 py-2 ${
-                errors.email ? "border-red-500" : ""
-              }`}
+              className={`w-full border border-[#353535] rounded px-3 py-2 ${errors.email ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.email && <div className="text-red-500">{errors.email}</div>}
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Nombre:</label>
+            <label className="block text-white">Nombre:</label>
             <input
               placeholder="Enchapes"
               type="text"
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
-              className={`w-full border border-[#353535] rounded px-3 py-2 ${
-                errors.firstName ? "border-red-500" : ""
-              }`}
+              className={`w-full border border-[#353535] rounded px-3 py-2 ${errors.firstName ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.firstName && (
@@ -139,16 +137,15 @@ const RegisterModal = ({ open, onClose }) => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Apellido:</label>
+            <label className="block text-white">Apellido:</label>
             <input
               placeholder="Nueva York"
               type="text"
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
-              className={`w-full border border-[#353535] rounded px-3 py-2 ${
-                errors.lastName ? "border-red-500" : ""
-              }`}
+              className={`w-full border border-[#353535] rounded px-3 py-2 ${errors.lastName ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.lastName && (
@@ -156,15 +153,15 @@ const RegisterModal = ({ open, onClose }) => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Contraseña:</label>
+            <label className="block text-white">Contraseña:</label>
             <input
+              placeholder="Mínimo 6 caracteres y máximo 16."
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={`w-full border border-[#353535] rounded px-3 py-2 ${
-                errors.password ? "border-red-500" : ""
-              }`}
+              className={`w-full border border-[#353535] rounded px-3 py-2 ${errors.password ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.password && (
@@ -172,15 +169,14 @@ const RegisterModal = ({ open, onClose }) => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Confirmar Contraseña:</label>
+            <label className="block text-white">Confirmar Contraseña:</label>
             <input
               type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={`w-full border border-[#353535] rounded px-3 py-2 ${
-                errors.confirmPassword ? "border-red-500" : ""
-              }`}
+              className={`w-full border border-[#353535] rounded px-3 py-2 ${errors.confirmPassword ? "border-red-500" : ""
+                }`}
               required
             />
             {errors.confirmPassword && (
@@ -189,7 +185,7 @@ const RegisterModal = ({ open, onClose }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700">Celular:</label>
+            <label className="block text-white">Celular:</label>
             <PhoneInput
               value={formData.phone}
               onChange={handlePhoneChange}
@@ -199,9 +195,8 @@ const RegisterModal = ({ open, onClose }) => {
 
           <button
             type="submit"
-            className={`text-white px-4 py-2 w-full rounded bg-[#2c4255] hover:bg-[#3c5d7a] ${
-              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`text-white px-4 py-2 w-full rounded bg-[#2c4255] hover:bg-[#3c5d7a] ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             disabled={isSubmitting}
           >
             {isSubmitting ? "Registrando..." : "Registrarse"}

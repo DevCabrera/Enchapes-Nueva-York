@@ -24,7 +24,7 @@ const googleClientId = process.env.GOOGLE_CLIENT_ID;
 
 // 6. Middleware de terceros
 app.use(cors({
-    origin: 'http://localhost:5173', // Reemplaza con la URL de tu frontend
+    origin: 'http://localhost:5173', // Reemplazar la url con el front /5173 react y 4200 angular
     credentials: true,
 }));
 app.use(cookieParser());

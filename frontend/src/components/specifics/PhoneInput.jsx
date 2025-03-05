@@ -18,7 +18,7 @@ const PhoneInput = ({ value, onChange, error, disabled }) => {
             <Button
               ripple={false}
               variant="text"
-              color="blue-gray"
+              color="white"
               className="h-10 w-14 shrink-0 rounded-r-none border border-r-0 border-blue-gray-200 bg-transparent px-3"
               disabled={disabled}
             >
@@ -35,14 +35,13 @@ const PhoneInput = ({ value, onChange, error, disabled }) => {
           type="tel"
           pattern="[0-9]*"
           inputMode="numeric"
-          maxLength={9} // Máximo 9 dígitos para Chile
+          maxLength={9}
           placeholder="9XXXXXXXX"
           value={value}
           onChange={onChange}
           disabled={disabled}
-          className={`rounded-l-none !border-t-blue-gray-200 placeholder:text-blue-gray-300 placeholder:opacity-100 focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-            error ? "border-red-500" : ""
-          }`}
+          className={`rounded-l-none !border-t-blue-gray-200 placeholder:text-white placeholder:opacity-100 focus:!border-t-gray-900 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${error ? "border-red-500" : ""
+            }`}
           labelProps={{
             className: "before:content-none after:content-none",
           }}

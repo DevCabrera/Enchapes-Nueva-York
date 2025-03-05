@@ -2,9 +2,9 @@ import { Button, Typography } from "@material-tailwind/react";
 
 export default function Expoir() {
   return (
-    <figure className="relative h-[400px] w-full shadow-xl shadow-blue-gray-900/50">
+    <figure className="relative h-[400px] w-full shadow-xl shadow-blue-gray-900/50 overflow-hidden">
       <img
-        className="h-full w-full  object-cover object-center animate-zoomc"
+        className="h-full w-full  object-cover object-center animate-zoomc overflow-hidden"
         src="src/img/enchape1.jpg"
         alt="nature image"
       />

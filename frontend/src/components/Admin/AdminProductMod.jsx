@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { updateProduct } from "../../../Client/Services/productServices";
 import { Button } from "@material-tailwind/react";
+import formatPriceCLP from "../../../Client/helpers/helperMoney";
 
 const AdminProductMod = ({ isOpen, onClose, product, onSave }) => {
   const [formData, setFormData] = useState({
@@ -12,21 +13,46 @@ const AdminProductMod = ({ isOpen, onClose, product, onSave }) => {
     espesor: "",
     peso_m2: "",
     precio_m2: "",
+    precio_m2_iva: "", // Precio con IVA
     foto: null,
   });
 
   useEffect(() => {
     if (product) {
-      setFormData((prevFormData) => ({ ...prevFormData, ...product }));
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        ...product,
+        precio_m2_iva: calculateIva(product.precio_m2),
+      }));
     }
   }, [product]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: files ? files[0] : value,
-    });
+    if (name === "foto") {
+      setFormData({
+        ...formData,
+        [name]: files ? files[0] : value,
+      });
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+
+      if (name === "precio_m2") {
+        const precioConIva = calculateIva(value);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          precio_m2_iva: precioConIva,
+        }));
+      }
+    }
+  };
+
+  const calculateIva = (precio) => {
+    const iva = 0.19; // IVA en Chile es 19%
+    return (precio * (1 + iva)).toFixed(2);
   };
 
   const handleSubmit = async (e) => {
@@ -108,6 +134,14 @@ const AdminProductMod = ({ isOpen, onClose, product, onSave }) => {
             onChange={handleChange}
             className="w-full mb-4 p-2 border rounded"
             required
+          />
+          <label className="block text-gray-700">Precio M2 con IVA</label>
+          <input
+            type="text"
+            name="precio_m2_iva"
+            value={formatPriceCLP(formData.precio_m2_iva)}
+            readOnly
+            className="w-full mb-4 p-2 border rounded bg-gray-100"
           />
           <label className="block text-gray-700">Foto</label>
           <input

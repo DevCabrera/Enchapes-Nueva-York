@@ -8,7 +8,7 @@ import {
   Button,
   IconButton,
 } from "@material-tailwind/react";
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { ShoppingCartIcon, ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../../../Client/Context/AuthProvider";
 
 export default function Navbart({ setOpenModal }) {
@@ -77,13 +77,20 @@ export default function Navbart({ setOpenModal }) {
     >
       <div className="flex items-center justify-between text-white">
         <Link to="/">
-          <Typography
-            as="a"
-            href="#"
-            className="mr-6 cursor-pointer py-1.5 font-serif text-white text-2xl"
-          >
-            Enchapes Nueva York
-          </Typography>
+          <div className="flex items-center">
+            <img
+              src="src/img/Martillazo.png"
+              alt="logo-ct"
+              className="w-20"
+            />
+            <Typography
+              as="a"
+              href="#"
+              className="mr-6 cursor-pointer py-1.5 font-serif text-white text-2xl"
+            >
+              Enchapes Nueva York
+            </Typography>
+          </div>
         </Link>
         <div className="flex items-center gap-4">
           <div className="hidden lg:block">{navList}</div>
@@ -91,33 +98,23 @@ export default function Navbart({ setOpenModal }) {
             {user ? (
               <>
                 <Link to="/account">
-                  <Button
-                    variant="outlined"
-                    size="sm"
-                    className="text-white border-white hover:text-orange-600"
+                  <Typography
+                    as="li"
+                    variant="small"
+                    className="p-1 font-normal text-white"
                   >
-                    Mi Cuenta
-                  </Button>
+                    <Link
+                      to="/account"
+                      className="flex items-center hover:text-[#E67E22]"
+                    >
+                      Mi Cuenta
+                    </Link>
+                  </Typography>
                 </Link>
                 <Link to="/cart">
                   <ShoppingCartIcon className="h-6 w-6 hover:text-orange-600" />
                 </Link>
-                <IconButton onClick={logoutUser} className="text-white">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
-                    />
-                  </svg>
-                </IconButton>
+                <ArrowRightStartOnRectangleIcon onClick={logoutUser} className="h-6 w-6 hover:text-orange-600 cursor-pointer" />
               </>
             ) : (
               <Button

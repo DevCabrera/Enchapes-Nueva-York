@@ -49,7 +49,8 @@ const loginUser = async (req, res) => {
                 celular: user.celular,
                 id_tipo_usuario: user.id_tipo_usuario,
                 tipo_usuario: user.tipoUsuario?.nombre || null,
-            }
+            },
+            token: token,
         });
 
     } catch (error) {

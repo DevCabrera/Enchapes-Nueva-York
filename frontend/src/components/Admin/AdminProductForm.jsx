@@ -5,6 +5,7 @@ import {
   updateProduct,
 } from "../../../Client/Services/productServices";
 import { Button } from "@material-tailwind/react";
+import formatPriceCLP from "../../../Client/helpers/helperMoney";
 
 const AdminProductForm = ({ isOpen, onClose, product, onSave }) => {
   const [formData, setFormData] = useState({
@@ -15,7 +16,8 @@ const AdminProductForm = ({ isOpen, onClose, product, onSave }) => {
     espesor: "",
     peso_m2: "",
     precio_m2: "",
-    fotos: [], //ARRAY DE FOTOS
+    precio_m2_iva: "", // Precio con IVA
+    fotos: [],
     ...product,
   });
 
@@ -24,7 +26,7 @@ const AdminProductForm = ({ isOpen, onClose, product, onSave }) => {
       setFormData((prevFormData) => ({
         ...prevFormData,
         ...product,
-        fotos: product.fotos || [], //ESPERAR AL CAMBIO DE LAS FOTOS Y ALMACENARLAS
+        fotos: product.fotos || [],
       }));
     }
   }, [product]);
@@ -32,22 +34,32 @@ const AdminProductForm = ({ isOpen, onClose, product, onSave }) => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "fotos") {
-      // Si es un archivo, agregar múltiples imágenes al array
       setFormData((prevFormData) => ({
         ...prevFormData,
         fotos: [...prevFormData.fotos, ...Array.from(files)],
       }));
     } else {
-      // Para el resto de los campos
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: value,
       }));
+
+      if (name === "precio_m2") {
+        const precioConIva = calculateIva(value);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          precio_m2_iva: precioConIva,
+        }));
+      }
     }
   };
 
+  const calculateIva = (precio) => {
+    const iva = 0.19; // IVA en Chile es 19%
+    return (precio * (1 + iva)).toFixed(2);
+  };
+
   const handleRemoveImage = (index) => {
-    // Eliminar una imagen específica por índice
     setFormData((prevFormData) => ({
       ...prevFormData,
       fotos: prevFormData.fotos.filter((_, i) => i !== index),
@@ -167,6 +179,14 @@ const AdminProductForm = ({ isOpen, onClose, product, onSave }) => {
             onChange={handleChange}
             className="w-full mb-4 p-2 border rounded"
             required
+          />
+          <label className="block text-gray-700">Precio M2 con IVA / pone este valor en el valor m2</label>
+          <input
+            type="text"
+            name="precio_m2_iva"
+            value={formatPriceCLP(formData.precio_m2_iva)}
+            readOnly
+            className="w-full mb-4 p-2 border rounded bg-gray-100"
           />
           <label className="block text-gray-700">Fotos</label>
           <input
