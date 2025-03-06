@@ -42,8 +42,6 @@ const uploadPayment = async (req, res) => {
             id_producto: prod.id_producto,
             cantidad: prod.cantidad,
             subtotal: prod.subtotal,
-            // precio_unitario: prod.producto.ofertas.length > 0 ? prod.producto.ofertas[0].precio_oferta : prod.producto.precio_m2,
-            // subtotal: prod.cantidad * (prod.producto.oferta ? prod.producto.oferta.precio_descuento : prod.producto.precio_m2),
         }));
 
         await OrderDetails.bulkCreate(detalles);
@@ -82,6 +80,7 @@ const verifyPayment = async (req, res) => {
         res.status(500).json({ message: "Error al verificar el pago" });
     }
 };
+
 // Actualizar estado de envío
 const updateShippingStatus = async (req, res) => {
     try {

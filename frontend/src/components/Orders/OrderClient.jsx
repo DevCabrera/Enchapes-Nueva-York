@@ -39,6 +39,7 @@ const OrderClient = () => {
   }
 
   const TABLE_HEAD = [
+    "ID Pago",
     "Estado de pago",
     "Estado de envío",
     "Dirección a Enviar",
@@ -122,6 +123,15 @@ const OrderClient = () => {
 
               return (
                 <tr key={order.id_pago}>
+                  <td className={classes}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {order.id_pago_azar}
+                    </Typography>
+                  </td>
                   <td className={`${classes} ${className}`}>
                     <Typography
                       variant="small"

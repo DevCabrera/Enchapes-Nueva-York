@@ -27,6 +27,7 @@ const PaymentAdministration = () => {
   const [modalImage, setModalImage] = useState(null);
 
   const TABLE_HEAD = [
+    "ID Pago",
     "Correo",
     "Estado Actual",
     "Estado de Envío",
@@ -202,6 +203,15 @@ const PaymentAdministration = () => {
 
                 return (
                   <tr key={payment.id_pago}>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {payment.id_pago_azar}
+                      </Typography>
+                    </td>
                     <td className={classes}>
                       <Typography
                         variant="small"

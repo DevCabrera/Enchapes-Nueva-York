@@ -1,11 +1,22 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../../config/mysql");
+const crypto = require("crypto");
+
+function generateRandomPaymentID() {
+    return '#' + crypto.randomBytes(3).toString('hex').toUpperCase();
+}
 
 const Pago = sequelize.define("pago", {
     id_pago: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+    },
+    id_pago_azar: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        defaultValue: generateRandomPaymentID,
     },
     id_carro: {
         type: DataTypes.INTEGER,
@@ -35,7 +46,7 @@ const Pago = sequelize.define("pago", {
         type: DataTypes.ENUM("pendiente", "verificado", "rechazado"),
         defaultValue: "pendiente",
     },
-    estado_envio: { 
+    estado_envio: {
         type: DataTypes.ENUM("pendiente", "enviado", "entregado"),
         defaultValue: "pendiente",
     },

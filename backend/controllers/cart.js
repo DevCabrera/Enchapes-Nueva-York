@@ -22,7 +22,7 @@ const getCart = async (req, res) => {
                             include: [
                                 {
                                     model: ImgPro,
-                                    as: "imagenes", // Asegúrate de que el alias coincida con las asociaciones
+                                    as: "imagenes",
                                 },
                             ],
                         },
@@ -37,7 +37,6 @@ const getCart = async (req, res) => {
         res.status(500).json({ message: "Error al obtener el carrito" });
     }
 };
-
 
 // Agregar un producto al carrito
 const addToCart = async (req, res) => {
@@ -81,6 +80,7 @@ const addToCart = async (req, res) => {
         res.status(500).json({ message: "Error al agregar producto al carrito" });
     }
 };
+
 // Actualizar la cantidad de un producto en el carrito
 const updateCart = async (req, res) => {
     try {
