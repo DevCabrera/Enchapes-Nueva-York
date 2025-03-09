@@ -1,13 +1,26 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AdminProductList from "./AdminProductList";
 import AdminProductForm from "./AdminProductForm";
 import UserListModal from "./UserListModal";
+import { useAuth } from "../../../Client/Context/AuthProvider";
 
 const Administration = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isUserListModalOpen, setIsUserListModalOpen] = useState(false);
-  const navigate = useNavigate(); // Inicializa useNavigate
+  const { user, loading, logoutUser } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/");
+    }
+  }, [loading, user, navigate]);
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
 
   return (
     <div className="p-6">
@@ -37,16 +50,23 @@ const Administration = () => {
       {/* Botón para ir a PaymentAdministration */}
       <button
         className="mb-4 bg-purple-500 text-white px-4 py-2 rounded mr-2"
-        onClick={() => navigate("/payment-administration")} // Redirige a la ruta
+        onClick={() => navigate("/payment-administration")}
       >
         Administración de Pagos
       </button>
       {/* Botón para ir a Galeria */}
       <button
         className="mb-4 bg-purple-500 text-white px-4 py-2 rounded gap-2"
-        onClick={() => navigate("/admin/gallery")} // Redirige a la ruta
+        onClick={() => navigate("/admin/gallery")}
       >
-        ADministrar Galería
+        Administrar Galería
+      </button>
+      {/* Botón para cerrar sesión */}
+      <button
+        className="mb-4 bg-red-500 text-white px-4 py-2 rounded mr-2"
+        onClick={handleLogout}
+      >
+        Cerrar Sesión
       </button>
       {/* Lista de productos */}
       <AdminProductList />

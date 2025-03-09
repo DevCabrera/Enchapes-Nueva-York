@@ -14,7 +14,7 @@ const CartDetails = () => {
 
   useEffect(() => {
     if (!loading && !user) {
-      navigate("/"); // Redirigir al home si no está autenticado
+      navigate("/"); 
     }
   }, [loading, user, navigate]);
 

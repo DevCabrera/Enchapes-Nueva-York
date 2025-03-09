@@ -28,6 +28,7 @@ import OrderClient from "./components/Orders/OrderClient";
 import PaymentGene from "./components/specifics/PaymentGene";
 import GalleryAdmin from "./components/Admin/GalleryAdmin";
 import ProductAdm from "./components/Admin/ProductAdm";
+import Wsp from "./components/general/Wsp";
 
 function App() {
   return (
@@ -142,7 +143,9 @@ function MainContent() {
         <Route path="/account" element={<Account />} />
       </Routes>
       <LoginModal open={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      <Wsp />
       <Footer />
+      
     </>
   );
 }

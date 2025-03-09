@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
@@ -8,12 +8,13 @@ import {
   Button,
   IconButton,
 } from "@material-tailwind/react";
-import { ShoppingCartIcon, ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
+import { ShoppingCartIcon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../../../Client/Context/AuthProvider";
 
 export default function Navbart({ setOpenModal }) {
   const [openNav, setOpenNav] = useState(false);
   const { user, logoutUser } = useAuth(); // Contexto de autenticación
+  const navigate = useNavigate(); // Hook de navegación
 
   useEffect(() => {
     const handleResize = () => {
@@ -23,6 +24,11 @@ export default function Navbart({ setOpenModal }) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
 
   const navList = (
     <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
@@ -114,7 +120,7 @@ export default function Navbart({ setOpenModal }) {
                 <Link to="/cart">
                   <ShoppingCartIcon className="h-6 w-6 hover:text-orange-600" />
                 </Link>
-                <ArrowRightStartOnRectangleIcon onClick={logoutUser} className="h-6 w-6 hover:text-orange-600 cursor-pointer" />
+                <ArrowRightOnRectangleIcon onClick={handleLogout} className="h-6 w-6 hover:text-orange-600 cursor-pointer" />
               </>
             ) : (
               <Button
