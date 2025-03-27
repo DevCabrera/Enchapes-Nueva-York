@@ -22,10 +22,13 @@ const AllProducts = () => {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 p-6">
-      {products.map((product) => (
-        <ProductCard key={product.id_producto} product={product} />
-      ))}
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6 text-center">Nuestros revestimientos</h1>
+      <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
+        {products.map((product) => (
+          <ProductCard key={product.id_producto} product={product} />
+        ))}
+      </div>
     </div>
   );
 };

@@ -16,14 +16,14 @@ export default function Carouselw() {
               color="white"
               className="mb-4 text-3xl md:text-4xl lg:text-5xl"
             >
-              Enchapes Nueva York
+              Enchapes Nueva York.
             </Typography>
             <Typography
               variant="lead"
               color="white"
               className="mb-12 opacity-80"
             >
-              Todo muro es único como nuestros clientes
+              Todo muro es único como nuestros clientes.
             </Typography>
             <div className="flex justify-center gap-2">
               <Button size="lg" color="white">
@@ -42,7 +42,7 @@ export default function Carouselw() {
       </div>
       <div className="relative h-[500px] w-full overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80"
+          src="src/img/c2.jpg"
           alt="image 2"
           className="h-full w-full object-cover animate-zoomc"
         />
@@ -53,24 +53,28 @@ export default function Carouselw() {
               color="white"
               className="mb-4 text-3xl md:text-4xl lg:text-5xl"
             >
-              The Beauty of Nature
+              La belleza de los revestimientos.
             </Typography>
             <Typography
               variant="lead"
               color="white"
               className="mb-12 opacity-80"
             >
-              It is not so much for its beauty that the forest makes a claim
-              upon men&apos;s hearts, as for that subtle something, that quality
-              of air that emanation from old trees, that so wonderfully changes
-              and renews a weary spirit.
+              Descubre el encanto de los revestimientos de muro que transforman espacios en verdaderas
+              obras de arte. Fabricados con materiales de la más alta calidad,
+              nuestros revestimientos no solo aportan un diseño elegante y moderno,
+              sino que también ofrecen durabilidad y resistencia inigualables.
             </Typography>
-            <div className="flex gap-2">
+            <div className="flex justify-center gap-2">
               <Button size="lg" color="white">
-                Explore
+                <Link to="/products">
+                  <a className="flex items-center">Revestimientos</a>
+                </Link>
               </Button>
-              <Button size="lg" color="white" variant="text">
-                Gallery
+              <Button size="lg" color="white" variant="text" to="/home">
+                <Link to="/gallery">
+                  <a className="flex items-center">Galería</a>
+                </Link>
               </Button>
             </div>
           </div>
@@ -78,7 +82,7 @@ export default function Carouselw() {
       </div>
       <div className="relative h-[500px] w-full overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1518623489648-a173ef7824f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2762&q=80"
+          src="src/img/c3.jpg" 
           alt="image 3"
           className="h-full w-full object-cover animate-zoomc"
         />
@@ -89,24 +93,25 @@ export default function Carouselw() {
               color="white"
               className="mb-4 text-3xl md:text-4xl lg:text-5xl"
             >
-              The Beauty of Nature
+              ¿Por qué vale la pena comprar?
             </Typography>
             <Typography
               variant="lead"
               color="white"
               className="mb-12 opacity-80"
             >
-              It is not so much for its beauty that the forest makes a claim
-              upon men&apos;s hearts, as for that subtle something, that quality
-              of air that emanation from old trees, that so wonderfully changes
-              and renews a weary spirit.
+              Invertir en nuestros revestimientos de muro es mucho más que una compra; es una decisión inteligente y a largo plazo. Cada producto está diseñado pensando en combinar estética y funcionalidad, ofreciendo una durabilidad que supera las expectativas.
             </Typography>
-            <div className="flex gap-2">
+            <div className="flex justify-center gap-2">
               <Button size="lg" color="white">
-                Explore
+                <Link to="/products">
+                  <a className="flex items-center">Revestimientos</a>
+                </Link>
               </Button>
-              <Button size="lg" color="white" variant="text">
-                Gallery
+              <Button size="lg" color="white" variant="text" to="/home">
+                <Link to="/gallery">
+                  <a className="flex items-center">Galería</a>
+                </Link>
               </Button>
             </div>
           </div>
