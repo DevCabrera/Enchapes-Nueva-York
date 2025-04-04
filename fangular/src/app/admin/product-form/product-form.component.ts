@@ -28,14 +28,20 @@ export class ProductFormComponent {
     private productService: ProductService
   ) {
     if (data) {
-      this.formData = { ...data };
+      this.formData = { ...data, fotos: data.fotos || [] };
     }
   }
 
   handleChange(event: any): void {
     const { name, value, files } = event.target;
     if (name === 'fotos') {
-      this.formData.fotos = [...this.formData.fotos, ...Array.from(files)];
+      const newFiles = Array.from(files);
+      const totalFiles = this.formData.fotos.length + newFiles.length;
+      if (totalFiles > 5) {
+        alert('No puedes subir más de 5 imágenes.');
+        return;
+      }
+      this.formData.fotos = [...this.formData.fotos, ...newFiles];
     } else {
       this.formData[name] = value;
     }
@@ -48,6 +54,7 @@ export class ProductFormComponent {
   isFile(foto: any): boolean {
     return foto instanceof File;
   }
+
   getFileUrl(foto: any): string {
     return URL.createObjectURL(foto);
   }

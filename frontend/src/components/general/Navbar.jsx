@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
@@ -13,8 +13,7 @@ import { useAuth } from "../../../Client/Context/AuthProvider";
 
 export default function Navbart({ setOpenModal }) {
   const [openNav, setOpenNav] = useState(false);
-  const { user, logoutUser } = useAuth(); // Contexto de autenticación
-  const navigate = useNavigate(); // Hook de navegación
+  const { user, logoutUser } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -27,7 +26,11 @@ export default function Navbart({ setOpenModal }) {
 
   const handleLogout = async () => {
     await logoutUser();
-    navigate("/");
+    window.location.href = "/"; // Redirige al inicio
+  };
+
+  const handleCartClick = () => {
+    window.location.href = "/cart"; // Recarga forzada hacia /cart
   };
 
   const navList = (
@@ -117,10 +120,13 @@ export default function Navbart({ setOpenModal }) {
                     </Link>
                   </Typography>
                 </Link>
-                <Link to="/cart">
+                <button onClick={handleCartClick} className="relative">
                   <ShoppingCartIcon className="h-6 w-6 hover:text-orange-600" />
-                </Link>
-                <ArrowRightOnRectangleIcon onClick={handleLogout} className="h-6 w-6 hover:text-orange-600 cursor-pointer" />
+                </button>
+                <ArrowRightOnRectangleIcon
+                  onClick={handleLogout}
+                  className="h-6 w-6 hover:text-orange-600 cursor-pointer"
+                />
               </>
             ) : (
               <Button

@@ -1,39 +1,42 @@
 <div class="p-6">
     <h2 class="text-xl font-bold mb-4">{{ data.id_producto ? 'Editar Producto' : 'Agregar Producto' }}</h2>
-    <form (ngSubmit)="handleSubmit()">
-        <label class="block text-gray-700">SKU</label>
-        <input type="text" name="sku" [(ngModel)]="formData.sku" class="w-full mb-4 p-2 border rounded" required />
-        <label class="block text-gray-700">Nombre</label>
-        <input type="text" name="nombre" [(ngModel)]="formData.nombre" class="w-full mb-4 p-2 border rounded"
-            required />
-        <label class="block text-gray-700">Ancho</label>
-        <input type="number" name="ancho" [(ngModel)]="formData.ancho" class="w-full mb-4 p-2 border rounded"
-            required />
-        <label class="block text-gray-700">Alto</label>
-        <input type="number" name="alto" [(ngModel)]="formData.alto" class="w-full mb-4 p-2 border rounded" required />
-        <label class="block text-gray-700">Espesor</label>
-        <input type="number" name="espesor" [(ngModel)]="formData.espesor" class="w-full mb-4 p-2 border rounded"
-            required />
-        <label class="block text-gray-700">Peso M2</label>
-        <input type="number" name="peso_m2" [(ngModel)]="formData.peso_m2" class="w-full mb-4 p-2 border rounded"
-            required />
-        <label class="block text-gray-700">Precio M2</label>
-        <input type="number" name="precio_m2" [(ngModel)]="formData.precio_m2" class="w-full mb-4 p-2 border rounded"
-            required />
-        <label class="block text-gray-700">Fotos</label>
-        <input type="file" name="fotos" (change)="handleChange($event)" class="w-full mb-4 p-2" multiple />
-        <div *ngIf="formData.fotos.length > 0" class="w-full mb-4">
-            <div *ngFor="let foto of formData.fotos; let i = index" class="relative">
-                <img [src]="isFile(foto) ? getFileUrl(foto) : foto" alt="Producto"
-                    class="w-32 h-32 object-cover rounded mb-2" />
-                <button type="button" class="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 rounded"
-                    (click)="handleRemoveImage(i)">Eliminar</button>
+    <div class="max-h-[80vh] overflow-y-auto pr-4">
+        <form (ngSubmit)="handleSubmit()">
+            <label class="block text-gray-700">SKU</label>
+            <input type="text" name="sku" [(ngModel)]="formData.sku" class="w-full mb-4 p-2 border rounded" required />
+            <label class="block text-gray-700">Nombre</label>
+            <input type="text" name="nombre" [(ngModel)]="formData.nombre" class="w-full mb-4 p-2 border rounded"
+                required />
+            <label class="block text-gray-700">Ancho</label>
+            <input type="number" name="ancho" [(ngModel)]="formData.ancho" class="w-full mb-4 p-2 border rounded"
+                required />
+            <label class="block text-gray-700">Alto</label>
+            <input type="number" name="alto" [(ngModel)]="formData.alto" class="w-full mb-4 p-2 border rounded"
+                required />
+            <label class="block text-gray-700">Espesor</label>
+            <input type="number" name="espesor" [(ngModel)]="formData.espesor" class="w-full mb-4 p-2 border rounded"
+                required />
+            <label class="block text-gray-700">Peso M2</label>
+            <input type="number" name="peso_m2" [(ngModel)]="formData.peso_m2" class="w-full mb-4 p-2 border rounded"
+                required />
+            <label class="block text-gray-700">Precio M2</label>
+            <input type="number" name="precio_m2" [(ngModel)]="formData.precio_m2"
+                class="w-full mb-4 p-2 border rounded" required />
+            <label class="block text-gray-700">Fotos</label>
+            <input type="file" name="fotos" (change)="handleChange($event)" class="w-full mb-4 p-2" multiple />
+            <div *ngIf="formData.fotos.length > 0" class="w-full mb-4">
+                <div *ngFor="let foto of formData.fotos; let i = index" class="relative">
+                    <img [src]="isFile(foto) ? getFileUrl(foto) : foto" alt="Producto"
+                        class="w-32 h-32 object-cover rounded mb-2" />
+                    <button type="button" class="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 rounded"
+                        (click)="handleRemoveImage(i)">Eliminar</button>
+                </div>
             </div>
-        </div>
-        <div class="flex justify-end mt-4">
-            <button type="button" class="bg-red-500 text-white px-4 py-2 rounded mr-2"
-                (click)="onNoClick()">Cancelar</button>
-            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Guardar</button>
-        </div>
-    </form>
+            <div class="flex justify-end mt-4">
+                <button type="button" class="bg-red-500 text-white px-4 py-2 rounded mr-2"
+                    (click)="onNoClick()">Cancelar</button>
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Guardar</button>
+            </div>
+        </form>
+    </div>
 </div>

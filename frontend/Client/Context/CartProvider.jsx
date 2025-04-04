@@ -63,7 +63,24 @@ const CartProvider = ({ children }) => {
 
   const addProduct = async (product, quantity) => {
     try {
+      // Actualiza el carrito localmente
+      setCart((prevCart) => {
+        const existingItem = prevCart.find((item) => item.id_producto === product.id_producto);
+        if (existingItem) {
+          return prevCart.map((item) =>
+            item.id_producto === product.id_producto
+              ? { ...item, cantidad: item.cantidad + quantity }
+              : item
+          );
+        } else {
+          return [...prevCart, { ...product, cantidad: quantity }];
+        }
+      });
+
+      // Llama a la API para agregar el producto
       await addToCart(product, quantity);
+
+      // Sincroniza el carrito con la API
       await syncCart();
     } catch (error) {
       console.error("Error al agregar producto:", error);

@@ -1,23 +1,32 @@
 import { useEffect, useState } from "react";
-import { Typography, Button, Card } from "@material-tailwind/react";
+import { Typography, Button, Card, Spinner } from "@material-tailwind/react";
 import { useCart } from "../../../Client/Context/cartContext";
 import { useAuth } from "../../../Client/Context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import formatPriceCLP from "../../../Client/helpers/helperMoney";
 
 const CartDetails = () => {
-  const { cart, clearCart, updateQuantity, removeFromCart, idCarro } =
-    useCart();
-  const { user, loading } = useAuth();
+  const { cart, clearCart, updateQuantity, removeFromCart, idCarro, loading, syncCart } = useCart();
+  const { user, loading: authLoading } = useAuth();
   const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
 
+  // Sincronizar el carrito al cargar la página
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/"); 
-    }
-  }, [loading, user, navigate]);
+    const fetchCart = async () => {
+      await syncCart(); // Sincroniza el carrito con el backend
+    };
+    fetchCart();
+  }, [syncCart]);
 
+  // Redirigir al inicio si el usuario no está autenticado
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/");
+    }
+  }, [authLoading, user, navigate]);
+
+  // Calcular el precio total del carrito
   useEffect(() => {
     const total = cart.reduce(
       (acc, item) => acc + item.cantidad * item.producto.precio_m2,
@@ -26,8 +35,13 @@ const CartDetails = () => {
     setTotalPrice(total);
   }, [cart]);
 
-  if (loading) {
-    return <p>Cargando...</p>;
+  // Mostrar spinner mientras se sincroniza el carrito o se autentica el usuario
+  if (authLoading || loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner className="h-12 w-12 text-orange-600" />
+      </div>
+    );
   }
 
   const TABLE_HEAD = ["Producto", "Precio/m²", "Cantidad/m²", "Subtotal", "Acciones"];
@@ -65,9 +79,7 @@ const CartDetails = () => {
             <tbody>
               {cart.map((item, index) => {
                 const isLast = index === cart.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
+                const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
                 return (
                   <tr key={item.producto.id_producto}>
@@ -93,10 +105,7 @@ const CartDetails = () => {
                         type="number"
                         value={item.cantidad}
                         onChange={(e) =>
-                          updateQuantity(
-                            item.producto.id_producto,
-                            Number(e.target.value)
-                          )
+                          updateQuantity(item.producto.id_producto, Number(e.target.value))
                         }
                         className="w-16 border rounded text-center"
                       />
