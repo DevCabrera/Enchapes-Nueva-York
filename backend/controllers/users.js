@@ -1,7 +1,8 @@
 const Users = require("../models/MySql/users");
 const TipoUsuario = require("../models/MySql/userRol");
 const bcrypt = require('bcryptjs');
-const Direccion = require("../models/MySql/direccion")
+const Direccion = require("../models/MySql/direccion");
+const { sendWelcomeEmail } = require("./../utils/emailSender");
 /**
  * Método para obtener todos los usuarios
  * @param {*} req
@@ -90,7 +91,10 @@ const createUser = async (req, res) => {
             celular,
             id_tipo_usuario,
         });
-
+        await sendWelcomeEmail({
+            nombre: newUser.nombre,
+            email: newUser.email,
+        });
         res.status(201).json({
             message: "Usuario creado exitosamente",
             user: {

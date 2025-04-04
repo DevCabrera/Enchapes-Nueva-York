@@ -4,6 +4,7 @@ const CarroProd = require("../models/MySql/carro_prod");
 const Producto = require("../models/MySql/product");
 const OrderDetails = require("../models/MySql/orders");
 const Direccion = require("../models/MySql/direccion");
+const { sendOrderConfirmationEmail, sendPaymentConfirmationEmail, sendShippingStatusEmail, sendPaymentRefuseEmail } = require("../utils/emailSender");
 
 // Subir comprobante de pago
 const uploadPayment = async (req, res) => {
@@ -48,7 +49,10 @@ const uploadPayment = async (req, res) => {
 
         // Vaciar el carrito
         await CarroProd.destroy({ where: { id_carro } });
-
+        await sendOrderConfirmationEmail({
+            id: nuevoPago.id_pago,
+            userEmail: carrito.email,
+        });
         res.status(200).json({
             message: "Pago registrado correctamente.",
             pago: nuevoPago,
@@ -65,7 +69,13 @@ const verifyPayment = async (req, res) => {
         const { id_pago } = req.params;
 
         // Encontrar el pago
-        const pago = await Pago.findByPk(id_pago);
+        const pago = await Pago.findByPk(id_pago, {
+            include: {
+                model: Carro,
+                as: "carro",
+                attributes: ["email"],
+            },
+        });
         if (!pago) {
             return res.status(404).json({ message: "Pago no encontrado" });
         }
@@ -73,7 +83,10 @@ const verifyPayment = async (req, res) => {
         // Actualizar el estado del pago a 'verificado'
         pago.estado = "verificado";
         await pago.save();
-
+        await sendPaymentConfirmationEmail({
+            id: pago.id_pago,
+            userEmail: pago.carro.email,
+        });
         res.status(200).json({ message: "Pago verificado correctamente", pago });
     } catch (error) {
         console.error("Error al verificar el pago:", error.message);
@@ -88,7 +101,13 @@ const updateShippingStatus = async (req, res) => {
         const { estado_envio } = req.body;
 
         // Encontrar el pago
-        const pago = await Pago.findByPk(id_pago);
+        const pago = await Pago.findByPk(id_pago, {
+            include: {
+                model: Carro,
+                as: "carro",
+                attributes: ["email"],
+            },
+        });
         if (!pago) {
             return res.status(404).json({ message: "Pago no encontrado" });
         }
@@ -96,6 +115,11 @@ const updateShippingStatus = async (req, res) => {
         // Actualizar el estado de envío
         pago.estado_envio = estado_envio;
         await pago.save();
+        await sendShippingStatusEmail({
+            id: pago.id_pago,
+            userEmail: pago.carro.email,
+            shippingStatus: estado_envio,
+        });
 
         res.status(200).json({ message: "Estado de envío actualizado correctamente", pago });
     } catch (error) {
@@ -109,15 +133,34 @@ const rejectPayment = async (req, res) => {
     try {
         const { id_pago } = req.params;
 
-        // Encontrar el pago
-        const pago = await Pago.findByPk(id_pago);
+        // Buscar el pago e incluir el carrito relacionado
+        const pago = await Pago.findByPk(id_pago, {
+            include: {
+                model: Carro,
+                as: "carro",
+                attributes: ["email"], // Incluir el correo del usuario
+            },
+        });
+
         if (!pago) {
             return res.status(404).json({ message: "Pago no encontrado" });
+        }
+
+        // Verificar si el correo del usuario está disponible
+        if (!pago.carro || !pago.carro.email) {
+            return res.status(400).json({ message: "El correo del usuario no está disponible" });
         }
 
         // Actualizar el estado del pago a 'rechazado'
         pago.estado = "rechazado";
         await pago.save();
+
+        // Enviar correo de rechazo de pago
+        await sendPaymentRefuseEmail({
+            id: pago.id_pago,
+            userEmail: pago.carro.email, // Usar el correo desde el modelo relacionado
+            status: "rechazado",
+        });
 
         res.status(200).json({ message: "Pago rechazado correctamente", pago });
     } catch (error) {
