@@ -9,12 +9,19 @@ const CartDetails = () => {
   const { cart, clearCart, updateQuantity, removeFromCart, idCarro, loading, syncCart } = useCart();
   const { user, loading: authLoading } = useAuth();
   const [totalPrice, setTotalPrice] = useState(0);
+  const [showSpinner, setShowSpinner] = useState(true); // Estado para controlar el spinner
   const navigate = useNavigate();
 
   // Sincronizar el carrito al cargar la página
   useEffect(() => {
     const fetchCart = async () => {
-      await syncCart(); // Sincroniza el carrito con el backend
+      try {
+        await syncCart(); // Sincroniza el carrito con el backend
+      } catch (error) {
+        console.error("Error al sincronizar el carrito:", error);
+      } finally {
+        setTimeout(() => setShowSpinner(false), 500);
+      }
     };
     fetchCart();
   }, [syncCart]);
@@ -36,7 +43,7 @@ const CartDetails = () => {
   }, [cart]);
 
   // Mostrar spinner mientras se sincroniza el carrito o se autentica el usuario
-  if (authLoading || loading) {
+  if (authLoading || loading || showSpinner) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Spinner className="h-12 w-12 text-orange-600" />
